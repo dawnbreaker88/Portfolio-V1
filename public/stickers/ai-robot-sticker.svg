@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+  <!-- Die-cut white backing -->
+  <g filter="url(#shadow)">
+    <!-- Antenna base -->
+    <rect x="46" y="8" width="8" height="14" rx="4" fill="#ffffff" />
+    <circle cx="50" cy="8" r="6" fill="#ffffff" />
+    <!-- Ears -->
+    <rect x="14" y="38" width="10" height="24" rx="4" fill="#ffffff" />
+    <rect x="76" y="38" width="10" height="24" rx="4" fill="#ffffff" />
+    <!-- Head -->
+    <rect x="20" y="20" width="60" height="58" rx="18" fill="#ffffff" />
+  </g>
+  <!-- Inner head -->
+  <rect x="24" y="24" width="52" height="50" rx="14" fill="#18181b" />
+  <!-- Antenna detail -->
+  <circle cx="50" cy="8" r="3.5" fill="#38bdf8" />
+  <!-- Screen face -->
+  <rect x="28" y="32" width="44" height="26" rx="8" fill="#09090b" stroke="#27272a" stroke-width="1.5" />
+  <!-- Glowing eyes -->
+  <rect x="36" y="40" width="8" height="10" rx="2" fill="#38bdf8" />
+  <rect x="56" y="40" width="8" height="10" rx="2" fill="#38bdf8" />
+  <!-- Mouth / grid -->
+  <line x1="38" y1="64" x2="62" y2="64" stroke="#52525b" stroke-width="2" stroke-linecap="round" />
+</svg>
