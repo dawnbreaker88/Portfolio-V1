@@ -17,7 +17,11 @@ const FILTER_TABS: { id: FilterCategory; label: string }[] = [
   { id: "systems", label: "Systems" },
 ];
 
-export function ProjectsSection() {
+export function ProjectsSection({
+  isStandalonePage = false,
+}: {
+  isStandalonePage?: boolean;
+} = {}) {
   const [activeFilter, setActiveFilter] = useState<FilterCategory>("all");
 
   // Sort featured projects first, then preserve order
@@ -69,12 +73,31 @@ export function ProjectsSection() {
 
   return (
     <section id="projects" aria-labelledby="projects-heading" className="mb-20 sm:mb-24">
-      {/* Header with Title, Index, and Category Filter Tabs */}
-      <SectionHeader
-        title={copy.sections.projects.title}
-        index={copy.sections.projects.index}
-        action={filterTabsAction}
-      />
+      {/* Header: Clean 2-line intro on standalone page, or standard SectionHeader on home */}
+      {isStandalonePage ? (
+        <div className="mb-8 space-y-4">
+          <div>
+            <h1
+              id="projects-heading"
+              className="font-display text-3xl sm:text-4xl font-normal text-foreground tracking-tight"
+            >
+              Projects
+            </h1>
+            <p className="font-sans text-sm sm:text-base text-muted-foreground leading-relaxed mt-2 max-w-xl">
+              A collection of software, machine learning, and systems projects I&apos;ve built. Filter by category or select any project to explore its full details.
+            </p>
+          </div>
+          <div className="flex items-center justify-start pt-1">
+            {filterTabsAction}
+          </div>
+        </div>
+      ) : (
+        <SectionHeader
+          title={copy.sections.projects.title}
+          index={copy.sections.projects.index}
+          action={filterTabsAction}
+        />
+      )}
 
       {/* 
         TWO columns from 640px up (sm:grid-cols-2), one column below.

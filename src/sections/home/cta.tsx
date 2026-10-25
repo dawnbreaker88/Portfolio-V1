@@ -10,7 +10,7 @@ export function CtaSection() {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <section aria-labelledby="cta-heading" className="mb-20">
+    <section id="cta" aria-labelledby="cta-heading" className="mb-20">
       <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6 p-6 sm:p-8 rounded-2xl border border-border/80 bg-card/40 backdrop-blur-md text-left">
         <div className="flex items-start gap-4">
           {/* Sparkle icon */}

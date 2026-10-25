@@ -51,7 +51,7 @@ function CommandDialog({
     <Dialog {...props}>
       <DialogContent
         className={cn(
-          "top-1/4 -translate-y-1/2 overflow-hidden rounded-2xl p-0 border border-border/80 bg-popover/95 backdrop-blur-2xl shadow-2xl sm:max-w-xl",
+          "top-16 sm:top-24 translate-y-0 overflow-hidden rounded-2xl p-0 border border-border/80 bg-popover/95 backdrop-blur-2xl shadow-2xl sm:max-w-xl max-h-[85vh]",
           className
         )}
         showCloseButton={showCloseButton}
@@ -60,7 +60,7 @@ function CommandDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <Command className="w-full bg-transparent p-1.5">
+        <Command className="w-full bg-transparent p-1.5 flex flex-col min-h-0 overflow-hidden">
           {children}
         </Command>
       </DialogContent>
@@ -75,7 +75,7 @@ function CommandInput({
   return (
     <div
       data-slot="command-input-wrapper"
-      className="flex items-center gap-2.5 border-b border-border/70 px-3.5 py-2.5"
+      className="flex items-center gap-2.5 border-b border-border/70 px-3.5 py-3 shrink-0"
     >
       <SearchIcon className="size-4 shrink-0 text-muted-foreground opacity-60" />
       <CommandPrimitive.Input
@@ -86,6 +86,9 @@ function CommandInput({
         )}
         {...props}
       />
+      <kbd className="hidden sm:inline-flex items-center gap-0.5 font-mono text-[10px] text-muted-foreground/70 px-1.5 py-0.5 rounded border border-border/60 bg-muted/40 shrink-0">
+        ESC
+      </kbd>
     </div>
   )
 }
@@ -98,7 +101,7 @@ function CommandList({
     <CommandPrimitive.List
       data-slot="command-list"
       className={cn(
-        "max-h-72 overflow-x-hidden overflow-y-auto px-1 py-1.5 outline-none no-scrollbar",
+        "max-h-[380px] sm:max-h-[440px] overflow-x-hidden overflow-y-auto px-1 py-1.5 outline-none no-scrollbar",
         className
       )}
       {...props}

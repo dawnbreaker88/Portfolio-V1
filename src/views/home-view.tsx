@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { TopBar } from "@/components/layout/top-bar";
+import React, { useEffect } from "react";
+import { useLenis } from "lenis/react";
 import { IconPillNav } from "@/components/layout/icon-pill-nav";
 import { StickerLayer } from "@/components/layout/sticker-layer";
 import { Banner } from "@/components/banner";
@@ -15,11 +15,27 @@ import { AchievementsSection } from "@/sections/home/achievements";
 import { CtaSection } from "@/sections/home/cta";
 import { Footer } from "@/sections/home/footer";
 
-
 export function HomeView() {
+  const lenis = useLenis();
+
+  // Smooth scroll to anchor on initial mount/navigation if hash is present
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash) {
+      const hash = window.location.hash;
+      const timer = setTimeout(() => {
+        if (lenis) {
+          lenis.scrollTo(hash, { offset: -70, duration: 1.0 });
+        } else {
+          const el = document.querySelector(hash);
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }
+      }, 250);
+      return () => clearTimeout(timer);
+    }
+  }, [lenis]);
+
   return (
     <div className="relative min-h-screen bg-background text-foreground flex flex-col overflow-x-hidden">
-      <TopBar />  
       <IconPillNav />
 
     
@@ -35,8 +51,8 @@ export function HomeView() {
           - From site.ts:      <Banner /> (uses site.banner in src/data/site.ts)
         ========================================================================
       */}
-      {/* <Banner active="kyoto"/> */}
-       <Banner active="anime.gif" fit="cover" />
+      {/* <Banner active="black"/> */}
+       <Banner active="perp2.png" fit="cover" />
 
      
       <main className="flex-1 w-full max-w-2xl mx-auto px-6 z-10">

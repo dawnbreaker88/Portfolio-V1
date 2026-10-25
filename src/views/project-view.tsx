@@ -21,7 +21,7 @@ export function ProjectView({ slug }: { slug: string }) {
     projectIndex < projects.length - 1 ? projects[projectIndex + 1] : null;
 
   return (
-    <main className="flex-1 max-w-2xl mx-auto px-6 py-20 w-full text-left">
+    <main className="flex-1 max-w-2xl mx-auto px-6 pt-24 sm:pt-28 pb-20 w-full text-left">
       {/* Back link */}
       <Link
         href="/#projects"

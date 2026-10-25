@@ -77,14 +77,18 @@ export function Banner({ active, config, className, alt, fit = "ambient", positi
     return <TokyoRain className={className} />;
   }
 
-  if (currentConfig.type === "image" || currentConfig.type === "gif") {
+  if (
+    currentConfig.type === "image" ||
+    currentConfig.type === "gif" ||
+    currentConfig.type === "video"
+  ) {
     return (
       <ImageBanner
         src={currentConfig.src}
         alt={currentConfig.alt || alt}
         className={className}
-        fit={currentConfig.fit || fit}
-        position={currentConfig.position || position}
+        fit={("fit" in currentConfig ? currentConfig.fit : fit) || fit}
+        position={("position" in currentConfig ? currentConfig.position : position) || position}
       />
     );
   }

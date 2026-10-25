@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 export function ContactView() {
   return (
-    <main className="flex-1 max-w-2xl mx-auto px-6 py-20 w-full text-left">
+    <main className="flex-1 max-w-2xl mx-auto px-6 pt-24 sm:pt-28 pb-20 w-full text-left">
       {/* Back link */}
       <Link
         href="/"

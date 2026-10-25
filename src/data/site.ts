@@ -49,9 +49,12 @@ export const site: SiteConfig = {
   githubUser: "prabhath",
   nav: [
     { id: "home", label: "Home", icon: "lucide:home" },
-    { id: "projects", label: "Projects", icon: "lucide:folders" },
+    { id: "about", label: "About", icon: "lucide:user" },
+    { id: "projects", label: "Projects", icon: "lucide:folder-git-2" },
     { id: "experience", label: "Experience", icon: "lucide:briefcase" },
     { id: "tech-stack", label: "Tech stack", icon: "lucide:wrench" },
+    { id: "github-activity", label: "GitHub", icon: "lucide:git-commit" },
     { id: "achievements", label: "Achievements", icon: "lucide:trophy" },
+    { id: "cta", label: "Contact", icon: "lucide:mail" },
   ],
 };

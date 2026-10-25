@@ -46,6 +46,8 @@ export function ImageBanner({
       ? "object-center"
       : position;
 
+  const isVideo = /\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(resolvedSrc);
+
   return (
     <div
       className={`relative w-full h-[320px] sm:h-[380px] md:h-[420px] lg:h-[460px] overflow-hidden bg-background ${
@@ -54,43 +56,70 @@ export function ImageBanner({
     >
       {/* 
         1. Ambient Glow Backdrop (Active in "ambient" mode):
-        Expands the colors and motion of the GIF/image across wide desktop monitors
+        Expands the colors and motion of the GIF/image/video across wide desktop monitors
         with heavy atmospheric blur so there are no awkward empty gaps or extreme cropping.
       */}
       {fit === "ambient" && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-          <Image
-            src={resolvedSrc}
-            alt=""
-            fill
-            unoptimized
-            aria-hidden="true"
-            className="w-full h-full object-cover blur-3xl opacity-40 dark:opacity-35 scale-125 select-none"
-          />
+          {isVideo ? (
+            <video
+              src={resolvedSrc}
+              autoPlay
+              loop
+              muted
+              playsInline
+              aria-hidden="true"
+              className="w-full h-full object-cover blur-3xl opacity-40 dark:opacity-35 scale-125 select-none"
+            />
+          ) : (
+            <Image
+              src={resolvedSrc}
+              alt=""
+              fill
+              unoptimized
+              aria-hidden="true"
+              className="w-full h-full object-cover blur-3xl opacity-40 dark:opacity-35 scale-125 select-none"
+            />
+          )}
           <div className="absolute inset-0 bg-background/25" />
         </div>
       )}
 
       {/* 
-        2. Main Crisp Image / GIF Layer:
+        2. Main Crisp Image / GIF / Video Layer:
         - In "ambient" or "contain" mode: Uses object-contain so 100% of the artwork/animation is visible,
           preserving natural aspect ratio without cutting off any part on desktop.
         - In "cover" mode: Fills the screen edge-to-edge with the requested focal position.
       */}
       <div className="relative w-full h-full flex items-center justify-center">
-        <Image
-          src={resolvedSrc}
-          alt={alt}
-          fill
-          priority
-          unoptimized
-          sizes="100vw"
-          className={`w-full h-full select-none pointer-events-none ${
-            fit === "cover"
-              ? `object-cover ${positionClass}`
-              : "object-contain max-w-5xl"
-          }`}
-        />
+        {isVideo ? (
+          <video
+            src={resolvedSrc}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className={`w-full h-full select-none pointer-events-none ${
+              fit === "cover"
+                ? `object-cover ${positionClass}`
+                : "object-contain max-w-5xl"
+            }`}
+          />
+        ) : (
+          <Image
+            src={resolvedSrc}
+            alt={alt}
+            fill
+            priority
+            unoptimized
+            sizes="100vw"
+            className={`w-full h-full select-none pointer-events-none ${
+              fit === "cover"
+                ? `object-cover ${positionClass}`
+                : "object-contain max-w-5xl"
+            }`}
+          />
+        )}
       </div>
 
       {/* Top scrim for AA-legible frosted top bar (black ~45% to transparent, ~120px) */}

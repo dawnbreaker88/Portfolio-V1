@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { fontDisplay, fontSans, fontMono } from "@/lib/fonts";
 import { Providers } from "@/providers";
+import { TopBar } from "@/components/layout/top-bar";
 import { site } from "@/data/site";
 import "./globals.css";
 
@@ -22,10 +23,17 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable} h-full antialiased`}
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable} h-full antialiased [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground">
-        <Providers>{children}</Providers>
+      <body
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+        className="min-h-full flex flex-col bg-background text-foreground [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+      >
+        <Providers>
+          <TopBar />
+          {children}
+        </Providers>
       </body>
     </html>
   );
