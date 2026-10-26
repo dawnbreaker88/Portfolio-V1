@@ -9,7 +9,8 @@ import {
   FolderGit2,
   Briefcase,
   Wrench,
-  Trophy,
+  Sparkles,
+  GitCommitHorizontal,
   type LucideIcon,
 } from "lucide-react";
 
@@ -36,7 +37,8 @@ export const DEFAULT_ITEMS: readonly AppDockItem[] = [
   { id: "projects", label: "Projects", icon: FolderGit2 },
   { id: "experience", label: "Experience", icon: Briefcase },
   { id: "tech-stack", label: "Tech stack", icon: Wrench },
-  { id: "achievements", label: "Achievements", icon: Trophy },
+  { id: "github-activity", label: "GitHub", icon: GitCommitHorizontal },
+  { id: "highlights", label: "Highlights", icon: Sparkles },
 ];
 
 // App dock — launcher matching MacDock frosted tray + hover motion (horizontal or vertical on the right).
@@ -98,6 +100,8 @@ export const AppDock = forwardRef<HTMLDivElement, AppDockProps>(
               <button
                 key={item.id}
                 type="button"
+                data-cuelume-select
+                data-cuelume-emphasis="subtle"
                 aria-label={item.label}
                 aria-current={active ? "page" : undefined}
                 onClick={() => {

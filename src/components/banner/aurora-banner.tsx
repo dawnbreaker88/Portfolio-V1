@@ -205,7 +205,7 @@ function createAuroraRenderer() {
     }
   };
   const solid = (k: number) => mat[k] === WALL || mat[k] === ROOF || mat[k] === PANE || mat[k] === DOOR || mat[k] === SHORE;
-  for (let x = -1; x < W + 2; ) {
+  for (let x = -1; x < W + 2;) {
     const h = hash(Math.floor(x * 7), 21);
     const open = smooth(96, 80, x) + smooth(122, 136, x);
     const onShelf = x > 132 && x < 180;

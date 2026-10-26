@@ -50,8 +50,9 @@ function CommandDialog({
   return (
     <Dialog {...props}>
       <DialogContent
+        data-lenis-prevent
         className={cn(
-          "top-16 sm:top-24 translate-y-0 overflow-hidden rounded-2xl p-0 border border-border/80 bg-popover/95 backdrop-blur-2xl shadow-2xl sm:max-w-xl max-h-[85vh]",
+          "top-16 sm:top-24 translate-y-0 flex flex-col gap-0 overflow-hidden rounded-2xl p-0 border border-border/80 bg-popover/95 backdrop-blur-2xl shadow-2xl sm:max-w-xl max-h-[85vh] sm:max-h-[80vh]",
           className
         )}
         showCloseButton={showCloseButton}
@@ -60,7 +61,7 @@ function CommandDialog({
           <DialogTitle>{title}</DialogTitle>
           <DialogDescription>{description}</DialogDescription>
         </DialogHeader>
-        <Command className="w-full bg-transparent p-1.5 flex flex-col min-h-0 overflow-hidden">
+        <Command className="w-full bg-transparent p-1.5 flex flex-col flex-1 min-h-0 overflow-hidden">
           {children}
         </Command>
       </DialogContent>
@@ -80,6 +81,7 @@ function CommandInput({
       <SearchIcon className="size-4 shrink-0 text-muted-foreground opacity-60" />
       <CommandPrimitive.Input
         data-slot="command-input"
+        data-cuelume-type
         className={cn(
           "w-full bg-transparent text-sm font-sans placeholder:text-muted-foreground text-foreground outline-none border-none disabled:cursor-not-allowed disabled:opacity-50",
           className
@@ -100,8 +102,11 @@ function CommandList({
   return (
     <CommandPrimitive.List
       data-slot="command-list"
+      data-lenis-prevent
       className={cn(
-        "max-h-[380px] sm:max-h-[440px] overflow-x-hidden overflow-y-auto px-1 py-1.5 outline-none no-scrollbar",
+        "flex-1 min-h-0 max-h-[380px] sm:max-h-[440px] overflow-x-hidden overflow-y-auto px-1 py-1.5 outline-none scroll-py-2 overscroll-contain",
+        "[scrollbar-width:thin] [scrollbar-color:rgb(150_150_150/0.25)_transparent] dark:[scrollbar-color:rgb(255_255_255/0.2)_transparent]",
+        "[&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border-strong/40 [&::-webkit-scrollbar-thumb]:rounded-full hover:[&::-webkit-scrollbar-thumb]:bg-border-strong/70",
         className
       )}
       {...props}
@@ -159,6 +164,7 @@ function CommandItem({
   return (
     <CommandPrimitive.Item
       data-slot="command-item"
+      data-cuelume-select
       className={cn(
         "group/command-item relative flex cursor-pointer select-none items-center gap-2.5 rounded-lg px-3 py-2 text-sm outline-none data-[disabled=true]:pointer-events-none data-[disabled=true]:opacity-50 data-[selected=true]:bg-muted/80 data-[selected=true]:text-foreground hover:bg-muted/60 text-muted-foreground hover:text-foreground transition-colors",
         className

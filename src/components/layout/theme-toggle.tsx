@@ -4,6 +4,7 @@ import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
 import { Icon } from "@/components/shared/icon";
 import { copy } from "@/data/copy";
+import { toggleThemeWithTransition } from "@/lib/theme-transition";
 import { cn } from "@/lib/utils";
 
 export function ThemeToggle({ className }: { className?: string }) {
@@ -23,7 +24,11 @@ export function ThemeToggle({ className }: { className?: string }) {
   return (
     <button
       type="button"
-      onClick={() => setTheme(isDark ? "light" : "dark")}
+      data-cuelume-toggle
+      data-cuelume-emphasis="subtle"
+      onClick={() =>
+        toggleThemeWithTransition(isDark ? "light" : "dark", setTheme)
+      }
       aria-label={copy.topBar.themeToggleAria}
       className={cn(
         "relative flex items-center justify-center w-8 h-8 rounded-full",

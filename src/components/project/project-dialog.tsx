@@ -10,7 +10,7 @@ import { Icon } from "@/components/shared/icon";
 import { TechChip } from "@/components/shared/tech-chip";
 import { buttonVariants } from "@/components/ui/button";
 import type { Project } from "@/types";
-import { cn } from "@/lib/utils";
+import { cn, ensureHttps } from "@/lib/utils";
 
 export type ProjectDialogProps = {
   project: Project | null;
@@ -165,7 +165,7 @@ export function ProjectDialog({
                     {/* Live link icon cue if liveUrl */}
                     {project.liveUrl && (
                       <Link
-                        href={project.liveUrl}
+                        href={ensureHttps(project.liveUrl)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
@@ -310,7 +310,7 @@ export function ProjectDialog({
                 <div className="flex flex-wrap items-center gap-2.5">
                   {project.liveUrl && (
                     <Link
-                      href={project.liveUrl}
+                      href={ensureHttps(project.liveUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={cn(
@@ -325,7 +325,7 @@ export function ProjectDialog({
 
                   {project.repoUrl && (
                     <Link
-                      href={project.repoUrl}
+                      href={ensureHttps(project.repoUrl)}
                       target="_blank"
                       rel="noopener noreferrer"
                       className={cn(

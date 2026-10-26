@@ -18,7 +18,7 @@
  * dithered so gradients read as texture, in the palette colour nearest its hue.
  */
 import React, { useEffect, useRef } from "react";
-                import type { Frame, Meta } from "../types.ts";
+import type { Frame, Meta } from "../types.ts";
 
 export const meta = {
   name: "black prism",

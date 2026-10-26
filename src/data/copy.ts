@@ -25,16 +25,46 @@ export const copy = {
       index: "05",
       title: "GitHub Activity",
     },
-    achievements: {
+    highlights: {
       index: "06",
-      title: "Achievements",
+      title: "Highlights",
     },
   },
   cta: {
-    headline: "Still scrolling? Say hi.",
-    subline: "I am always open to discussing projects, ideas, or opportunities.",
-    buttonDefault: "Open contact page",
+    headline: "Got something worth figuring out?",
+    headlinePrefix: "Got something worth ",
+    headlineSuffix: "?",
+    subline: "I’m interested in ideas that sit between product, systems, and learning.",
+    buttonDefault: "Let's talk",
     buttonHover: "Okay, let's talk",
+    words: [
+      {
+        word: "figuring out",
+        tip: "A hard problem? Send it over.",
+        topic: "problem",
+        starter: "Hey Prabhath, I've got a problem worth figuring out: ",
+      },
+      {
+        word: "building",
+        tip: "An idea that needs a builder?",
+        topic: "build",
+        starter: "Hey Prabhath, I'm working on building: ",
+      },
+      {
+        word: "breaking",
+        tip: "Something broken I could help fix?",
+        topic: "fix",
+        starter: "Hey Prabhath, I have something broken that could use your help: ",
+      },
+      {
+        word: "reading",
+        tip: "A paper or post I should read?",
+        topic: "reading",
+        starter: "Hey Prabhath, here's something you might enjoy reading: ",
+      },
+    ],
+    // Optional availability pill (off by default; enable with copy.cta.availability = { label, tip })
+    availability: undefined as { label: string; tip: string } | undefined,
   },
   projectDialog: {
     contextHeading: "Context & Overview",

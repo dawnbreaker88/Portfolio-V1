@@ -42,41 +42,54 @@ export function ProfileSection() {
     <section
       id="home"
       aria-labelledby="profile-heading"
-      className="relative flex flex-col items-center text-center -mt-16 sm:-mt-20 mb-16 sm:mb-20 z-10"
+      className="relative flex flex-col items-center text-center mt-0 dark:-mt-16 dark:sm:-mt-20 mb-16 sm:mb-20 z-10 transition-[margin] duration-500 ease-in-out"
     >
-      {/* Interactive Avatar with Simple Fade Easter Egg */}
-      <button
-        type="button"
-        onClick={handleAvatarClick}
-        aria-label="Switch profile avatar"
-        className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-b from-border/80 via-border/40 to-background shadow-2xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-95 transition-transform duration-150 select-none"
+      {/* Interactive Avatar with Initial Entrance Animation & Simple Fade Easter Egg */}
+      <motion.div
+        initial={shouldReduceMotion ? false : { scale: 0.88, opacity: 0, y: 14 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.12 }}
       >
-        <div className="relative w-full h-full rounded-full overflow-hidden bg-card border border-border/80 ring-4 ring-background">
-          <AnimatePresence mode="popLayout">
-            <motion.div
-              key={avatarList[avatarIndex]}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-              className="relative w-full h-full"
-            >
-              <Image
-                src={avatarList[avatarIndex]}
-                alt={site.name}
-                fill
-                unoptimized
-                sizes="(max-width: 640px) 112px, 128px"
-                className="object-cover select-none pointer-events-none"
-                priority
-              />
-            </motion.div>
-          </AnimatePresence>
-        </div>
-      </button>
+        <button
+          type="button"
+          data-cuelume-tap
+          data-cuelume-theme="bubble"
+          onClick={handleAvatarClick}
+          aria-label="Switch profile avatar"
+          className="relative w-28 h-28 sm:w-32 sm:h-32 rounded-full p-1 bg-gradient-to-b from-border/80 via-border/40 to-background shadow-2xl cursor-pointer outline-none focus-visible:ring-2 focus-visible:ring-primary active:scale-95 transition-transform duration-150 select-none"
+        >
+          <div className="relative w-full h-full rounded-full overflow-hidden bg-card border border-border/80 ring-4 ring-background">
+            <AnimatePresence mode="popLayout">
+              <motion.div
+                key={avatarList[avatarIndex]}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="relative w-full h-full"
+              >
+                <Image
+                  src={avatarList[avatarIndex]}
+                  alt={site.name}
+                  fill
+                  unoptimized
+                  sizes="(max-width: 640px) 112px, 128px"
+                  className="object-cover select-none pointer-events-none"
+                  priority
+                />
+              </motion.div>
+            </AnimatePresence>
+          </div>
+        </button>
+      </motion.div>
 
-      {/* Name + Rotating Tagline Container */}
-      <div className="mt-6 flex flex-col items-center max-w-lg mx-auto">
+      {/* Name + Rotating Tagline Container with Entrance Animation */}
+      <motion.div
+        initial={shouldReduceMotion ? false : { opacity: 0, y: 14, filter: "blur(6px)" }}
+        animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1], delay: 0.22 }}
+        className="mt-6 flex flex-col items-center max-w-lg mx-auto"
+      >
         {/* Static Name */}
         <h1
           id="profile-heading"
@@ -113,14 +126,19 @@ export function ProfileSection() {
             </motion.p>
           </AnimatePresence>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Social Buttons */}
-      <div className="flex items-center gap-3.5 mt-6">
+      {/* Social Buttons with Entrance Animation */}
+      <motion.div
+        initial={shouldReduceMotion ? false : { opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1], delay: 0.32 }}
+        className="flex items-center gap-3.5 mt-6"
+      >
         {socials.map((social) => (
           <SocialButton key={social.name} social={social} />
         ))}
-      </div>
+      </motion.div>
     </section>
   );
 }

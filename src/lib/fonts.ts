@@ -2,11 +2,19 @@ import localFont from "next/font/local";
 import { Geist_Mono } from "next/font/google";
 
 export const fontDisplay = localFont({
-  src: "../assets/fonts/Melodrama-Variable.woff2",
+  src: "../assets/fonts/PanameraVF.woff2",
   variable: "--font-display",
   display: "swap",
-  fallback: ["ui-serif", "Georgia", "serif"],
+  fallback: ["ui-sans-serif", "system-ui", "sans-serif"],
 });
+
+// Alternative fonts kept for easy swapping:
+// export const fontDisplayMelodrama = localFont({
+//   src: "../assets/fonts/Melodrama-Variable.woff2",
+//   variable: "--font-display",
+//   display: "swap",
+//   fallback: ["ui-serif", "Georgia", "serif"],
+// });
 
 export const fontSans = localFont({
   src: "../assets/fonts/Satoshi-Variable.woff2",

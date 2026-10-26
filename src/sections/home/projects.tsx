@@ -8,13 +8,12 @@ import { SectionHeader } from "@/components/layout/section-header";
 import { ProjectCard } from "@/components/project/project-card";
 import { cn } from "@/lib/utils";
 
-type FilterCategory = "all" | "web" | "ml" | "systems";
+type FilterCategory = "all" | "web" | "ml";
 
 const FILTER_TABS: { id: FilterCategory; label: string }[] = [
   { id: "all", label: "All" },
   { id: "web", label: "Web" },
   { id: "ml", label: "AI / ML" },
-  { id: "systems", label: "Systems" },
 ];
 
 export function ProjectsSection({
@@ -48,6 +47,8 @@ export function ProjectsSection({
           <button
             key={tab.id}
             role="tab"
+            data-cuelume-select
+            data-cuelume-emphasis="subtle"
             aria-selected={isActive}
             onClick={() => setActiveFilter(tab.id)}
             className={cn(
@@ -84,7 +85,7 @@ export function ProjectsSection({
               Projects
             </h1>
             <p className="font-sans text-sm sm:text-base text-muted-foreground leading-relaxed mt-2 max-w-xl">
-              A collection of software, machine learning, and systems projects I&apos;ve built. Filter by category or select any project to explore its full details.
+              A collection of web and machine learning projects I&apos;ve built. Filter by category or select any project to explore its full details.
             </p>
           </div>
           <div className="flex items-center justify-start pt-1">
@@ -103,22 +104,18 @@ export function ProjectsSection({
         TWO columns from 640px up (sm:grid-cols-2), one column below.
         16px gap (gap-4), equal-height rows (items-stretch).
       */}
-      <motion.div
-        layout
-        className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch"
-      >
-        <AnimatePresence mode="popLayout">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 items-stretch">
+        <AnimatePresence initial={false}>
           {filteredProjects.map((project, index) => (
             <motion.div
               key={project.slug}
-              layout
-              initial={{ opacity: 0, scale: 0.96 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.96 }}
+              layout="position"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               transition={{
-                layout: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
-                opacity: { duration: 0.2 },
-                delay: Math.min(index * 0.06, 0.4),
+                duration: 0.2,
+                ease: "easeOut",
               }}
               className="flex flex-col h-full"
             >
@@ -129,7 +126,7 @@ export function ProjectsSection({
             </motion.div>
           ))}
         </AnimatePresence>
-      </motion.div>
+      </div>
     </section>
   );
 }

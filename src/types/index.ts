@@ -13,12 +13,27 @@ export type Project = {
   whatsNew?: string;
   stack: { name: string; icon: string }[]; // icon = Iconify name
   status: "live" | "in-progress";
-  category: "ml" | "agents" | "systems" | "web";
+  category: "ml" | "agents" | "web";
   year?: string;
   featured?: boolean;
   liveUrl?: string;
   repoUrl?: string;
   draft?: boolean; // draft = noindex, excluded from sitemap/static params
+};
+
+export type SocialStat = {
+  label: string;
+  value: string;
+};
+
+export type SocialProfile = {
+  name: string;
+  handle: string;
+  bio: string;
+  location?: string;
+  locationIcon?: string;
+  avatar?: string; // local path in /public
+  stats?: SocialStat[];
 };
 
 export type Social = {
@@ -28,6 +43,7 @@ export type Social = {
   handle: string;
   blurb: string;
   avatar?: string;
+  profile?: SocialProfile;
 };
 
 export type Experience = {
@@ -52,11 +68,11 @@ export type TechItem = {
   group: TechItemGroup;
 };
 
-export type Achievement = {
+export type Highlight = {
+  label: "Research" | "Recognition" | string;
   title: string;
-  issuer: string;
-  year: string;
-  description?: string;
+  text: string;
+  meta?: string;
   link?: string;
 };
 
@@ -93,6 +109,18 @@ export type BannerConfig =
       alt?: string;
     };
 
+export type CtaWord = {
+  word: string;
+  tip: string;
+  topic: string;
+  starter: string;
+};
+
+export type CtaAvailability = {
+  label: string;
+  tip: string;
+};
+
 export type SiteConfig = {
   name: string;
   tagline: string;
@@ -100,10 +128,35 @@ export type SiteConfig = {
   identities: Identity[];
   url: string;
   description: string;
-  bio: string[];
+  bio: (string | React.ReactNode)[];
   banner: BannerConfig;
   avatar: string;
   avatars?: string[];
   githubUser?: string;
   nav: NavItem[];
 };
+
+export type GitHubContributionDay = {
+  date: string;
+  contributionCount: number;
+  color: string;
+  weekday: number;
+  level: number;
+};
+
+export type GitHubContributionWeek = {
+  contributionDays: GitHubContributionDay[];
+};
+
+export type GitHubContributionData = {
+  username: string;
+  totalContributions: number;
+  activities: Array<{
+    date: string;
+    count: number;
+    level: number;
+  }>;
+  weeks: GitHubContributionWeek[];
+  updatedAt: string;
+};
+

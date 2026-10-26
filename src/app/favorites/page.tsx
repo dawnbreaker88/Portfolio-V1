@@ -31,7 +31,11 @@ export default function FavoritesPage() {
             </span>
           </div>
           <p className="font-sans text-sm sm:text-base text-muted-foreground leading-relaxed">
-            A curated list of development tools, reading materials, software, and hardware setups that inspire my workflow.
+           A life beyond the terminal.
+
+Films that stay with me, albums I keep coming back to, and things I've enjoyed enough to make a little space for here.
+
+
           </p>
         </div>
 

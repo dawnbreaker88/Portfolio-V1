@@ -31,7 +31,11 @@ export default function BlogPage() {
             </span>
           </div>
           <p className="font-sans text-sm sm:text-base text-muted-foreground leading-relaxed">
-            Essays, technical deep dives, and thoughts on AI, system architecture, and modern product engineering are currently in the works.
+          Things worth understanding deserve more than a passing glance.
+
+A collection of technical explainers, concepts I've explored, and ideas I've worked through in writing.
+
+Currently exploring: machine learning, AI, and the systems behind the abstractions. 
           </p>
         </div>
 

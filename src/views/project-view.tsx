@@ -7,7 +7,7 @@ import { TechChip } from "@/components/shared/tech-chip";
 import { Icon } from "@/components/shared/icon";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
+import { cn, ensureHttps } from "@/lib/utils";
 
 export function ProjectView({ slug }: { slug: string }) {
   const projectIndex = projects.findIndex((p) => p.slug === slug);
@@ -25,6 +25,8 @@ export function ProjectView({ slug }: { slug: string }) {
       {/* Back link */}
       <Link
         href="/#projects"
+        data-cuelume-loading
+        data-cuelume-emphasis="subtle"
         className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground mb-8 transition-colors"
       >
         <Icon name="lucide:arrow-left" size={14} />
@@ -117,9 +119,10 @@ export function ProjectView({ slug }: { slug: string }) {
         <div className="pt-4 flex flex-wrap items-center gap-3 border-t border-border/50">
           {project.liveUrl && (
             <Link
-              href={project.liveUrl}
+              href={ensureHttps(project.liveUrl)}
               target="_blank"
               rel="noopener noreferrer"
+              data-cuelume-tap
               className={cn(
                 buttonVariants({ variant: "default" }),
                 "rounded-full font-mono text-xs px-5 inline-flex items-center gap-2"
@@ -132,9 +135,11 @@ export function ProjectView({ slug }: { slug: string }) {
 
           {project.repoUrl && (
             <Link
-              href={project.repoUrl}
+              href={ensureHttps(project.repoUrl)}
               target="_blank"
               rel="noopener noreferrer"
+              data-cuelume-tap
+              data-cuelume-emphasis="subtle"
               className={cn(
                 buttonVariants({ variant: "outline" }),
                 "border-border/80 hover:bg-muted/60 rounded-full font-mono text-xs px-5 inline-flex items-center gap-2"
@@ -151,6 +156,8 @@ export function ProjectView({ slug }: { slug: string }) {
           {prevProject ? (
             <Link
               href={`/projects/${prevProject.slug}`}
+              data-cuelume-loading
+              data-cuelume-emphasis="subtle"
               className="group flex flex-col text-left"
             >
               <span className="font-mono text-[11px] text-muted-foreground flex items-center gap-1 group-hover:text-foreground">
@@ -167,6 +174,8 @@ export function ProjectView({ slug }: { slug: string }) {
           {nextProject ? (
             <Link
               href={`/projects/${nextProject.slug}`}
+              data-cuelume-loading
+              data-cuelume-emphasis="subtle"
               className="group flex flex-col text-right ml-auto"
             >
               <span className="font-mono text-[11px] text-muted-foreground flex items-center justify-end gap-1 group-hover:text-foreground">

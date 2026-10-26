@@ -3,18 +3,21 @@
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/react";
 import { useLenis } from "lenis/react";
 import { site } from "@/data/site";
 import { copy } from "@/data/copy";
 import { Icon } from "@/components/shared/icon";
 import { ThemeToggle } from "./theme-toggle";
+import { SoundToggle } from "./sound-toggle";
 import { CommandPalette } from "./command-palette";
 import { springSoft } from "@/lib/motion";
 import { cn } from "@/lib/utils";
 
 export function TopBar() {
   const pathname = usePathname();
+  const { resolvedTheme } = useTheme();
   const [paletteOpen, setPaletteOpen] = useState(false);
   const [isCompact, setIsCompact] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
@@ -32,7 +35,7 @@ export function TopBar() {
   // Close dropdowns and update layout state on route changes
   useEffect(() => {
     setIsVisible(true);
-    setIsCompact(pathname !== "/" || (typeof window !== "undefined" && window.scrollY > 80));
+    setIsCompact(pathname !== "/" || (typeof window !== "undefined" && window.scrollY > 60));
     setMoreOpen(false);
     setMenuOpen(false);
   }, [pathname]);
@@ -79,33 +82,33 @@ export function TopBar() {
       window.removeEventListener("resize", updateProfileBottom);
       clearTimeout(timer);
     };
-  }, []);
+  }, [resolvedTheme]);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     const previous = lastScrollY.current;
     const diff = latest - previous;
     lastScrollY.current = latest;
 
-    // 1. In the hero/banner zone on home page (scrollY <= 80px), stay in full-width mode
-    if (latest <= 80 && pathname === "/") {
+    // Smooth full-width <-> compact pill transition with hysteresis
+    if (pathname === "/") {
+      if (latest > 65) {
+        setIsCompact(true);
+      } else if (latest < 25) {
+        setIsCompact(false);
+      }
+    } else {
+      setIsCompact(true);
+    }
+
+    // 1. In the top / hero area, stay visible
+    if (latest <= 80 || (pathname === "/" && latest < profileBottom)) {
       setIsVisible(true);
-      setIsCompact(false);
       accumulatedDown.current = 0;
       accumulatedUp.current = 0;
       return;
     }
 
-    setIsCompact(true);
-
-    // 2. On home page, keep top navigation ALWAYS VISIBLE until the profile photo and name have scrolled off-screen
-    if (pathname === "/" && latest < profileBottom) {
-      setIsVisible(true);
-      accumulatedDown.current = 0;
-      accumulatedUp.current = 0;
-      return;
-    }
-
-    // 3. Do not hide if search command palette or navigation menu is active
+    // 2. Do not hide if search command palette or navigation menu is active
     if (paletteOpen || menuOpen || moreOpen) {
       setIsVisible(true);
       accumulatedDown.current = 0;
@@ -113,23 +116,23 @@ export function TopBar() {
       return;
     }
 
-    // 4. Once past the name and avatar, hide only on intentional downward scroll (40px)
+    // 3. Smooth downward scroll threshold (50px)
     if (diff > 0) {
       accumulatedUp.current = 0;
       accumulatedDown.current += diff;
 
-      if (accumulatedDown.current > 40) {
+      if (accumulatedDown.current > 50) {
         setIsVisible(false);
         if (menuOpen) setMenuOpen(false);
         if (moreOpen) setMoreOpen(false);
       }
     }
-    // 5. Reveal on slight upward scroll (12px)
+    // 4. Smooth upward scroll threshold (20px)
     else if (diff < 0) {
       accumulatedDown.current = 0;
       accumulatedUp.current += Math.abs(diff);
 
-      if (accumulatedUp.current > 12) {
+      if (accumulatedUp.current > 20) {
         setIsVisible(true);
       }
     }
@@ -192,44 +195,45 @@ export function TopBar() {
   return (
     <>
       <motion.header
-        initial={false}
+        initial={{ y: -24, opacity: 0 }}
         animate={{
-          y: isVisible ? 0 : -85,
+          y: isVisible ? 0 : -90,
+          opacity: isVisible ? 1 : 0,
         }}
         transition={{
-          duration: 0.42,
+          duration: 0.28,
           ease: [0.22, 1, 0.36, 1],
         }}
-        className={cn(
-          "fixed top-0 inset-x-0 z-50 flex flex-col items-center pointer-events-none transition-[padding] duration-300",
-          isCompact ? "pt-3 px-4" : "pt-0 px-0"
-        )}
+        className="fixed top-0 inset-x-0 z-50 flex flex-col items-center pointer-events-none pt-2 sm:pt-3 px-3 sm:px-6"
       >
-        {/* Main Glass Bar */}
-        <motion.div
-          layout
-          transition={springSoft}
+        {/* Main Glass Bar: smoothly transitions between full-width and compact pill */}
+        <div
           className={cn(
-            "pointer-events-auto flex items-center justify-between transition-colors",
+            "pointer-events-auto w-full flex items-center justify-between",
+            "transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
             isCompact
-              ? "w-full max-w-2xl mx-auto rounded-2xl px-4 sm:px-5 py-2.5 border border-border/80 bg-background/60 dark:bg-[#111113]/60 shadow-lg backdrop-blur-xl backdrop-saturate-150 supports-[not(backdrop-filter:blur(1px))]:bg-background/95"
-              : "w-full px-6 sm:px-10 py-3.5 border-b border-transparent bg-transparent rounded-none"
+              ? "max-w-2xl mx-auto rounded-2xl px-4 sm:px-5 py-2.5 border border-border/80 bg-background/80 dark:bg-[#111113]/85 shadow-lg backdrop-blur-xl backdrop-saturate-150 supports-[not(backdrop-filter:blur(1px))]:bg-background/95"
+              : "max-w-7xl mx-auto rounded-2xl px-5 sm:px-8 py-3.5 border border-transparent bg-transparent shadow-none"
           )}
         >
           {/* Brand + Desktop Navigation */}
-          <motion.div layout="position" className="flex items-center gap-4 sm:gap-6">
+          <div className="flex items-center gap-4 sm:gap-6">
             <Link
               href="/"
+              data-cuelume-tap
+              data-cuelume-emphasis="subtle"
               className="font-display text-xl sm:text-2xl text-foreground font-normal tracking-tight hover:opacity-80 transition-opacity shrink-0"
             >
               {site.name}
             </Link>
 
-            {/* Desktop Navigation Links: Home, Projects, More (Hover) */}
+            {/* Desktop Navigation Links: Home, Projects, More (Hover), Contact */}
             <nav className="hidden sm:flex items-center gap-1 text-xs font-sans">
               {/* Home */}
               <Link
                 href="/"
+                data-cuelume-tap
+                data-cuelume-emphasis="subtle"
                 className={cn(
                   "px-3 py-1.5 rounded-full transition-colors font-medium",
                   pathname === "/"
@@ -243,6 +247,8 @@ export function TopBar() {
               {/* Projects */}
               <Link
                 href="/projects"
+                data-cuelume-tap
+                data-cuelume-emphasis="subtle"
                 className={cn(
                   "px-3 py-1.5 rounded-full transition-colors font-medium",
                   pathname.startsWith("/projects")
@@ -261,6 +267,7 @@ export function TopBar() {
               >
                 <button
                   type="button"
+                  data-cuelume-tap
                   onClick={() => setMoreOpen(!moreOpen)}
                   aria-expanded={moreOpen}
                   aria-haspopup="true"
@@ -294,6 +301,8 @@ export function TopBar() {
                     >
                       <Link
                         href="/blog"
+                        data-cuelume-tap
+                        data-cuelume-emphasis="subtle"
                         onClick={() => setMoreOpen(false)}
                         className={cn(
                           "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
@@ -313,6 +322,8 @@ export function TopBar() {
 
                       <Link
                         href="/favorites"
+                        data-cuelume-tap
+                        data-cuelume-emphasis="subtle"
                         onClick={() => setMoreOpen(false)}
                         className={cn(
                           "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
@@ -333,31 +344,67 @@ export function TopBar() {
                   )}
                 </AnimatePresence>
               </div>
-            </nav>
-          </motion.div>
 
-          {/* Right Actions: Search + Theme + Mobile Menu Button */}
-          <motion.div layout="position" className="flex items-center gap-2">
+              {/* Direct Navigation: Contact */}
+              <motion.div
+                whileHover={{ y: -1, scale: 1.02 }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              >
+                <Link
+                  href="/contact"
+                  data-cuelume-tap
+                  data-cuelume-emphasis="subtle"
+                  className={cn(
+                    "group px-3 py-1.5 rounded-full transition-all font-medium inline-flex items-center gap-1.5",
+                    pathname === "/contact"
+                      ? "text-foreground bg-muted/70 font-semibold shadow-xs"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                  )}
+                >
+                  <span>Contact</span>
+                  <span
+                    className={cn(
+                      "size-1.5 rounded-full transition-transform duration-200",
+                      pathname === "/contact"
+                        ? "bg-emerald-500 scale-110 shadow-xs"
+                        : "bg-muted-foreground/35 group-hover:bg-foreground group-hover:scale-125"
+                    )}
+                  />
+                </Link>
+              </motion.div>
+            </nav>
+          </div>
+
+          {/* Right Actions: Search + Sound + Theme + Mobile Menu Button */}
+          <div className="flex items-center gap-1.5 sm:gap-2">
             {/* Search Pill Button */}
             <button
               type="button"
+              data-cuelume-tap
               onClick={() => setPaletteOpen(true)}
               aria-label="Open command palette"
               className={cn(
-                "flex items-center gap-2 rounded-full border border-border/70 bg-muted/40 hover:bg-muted/80 text-muted-foreground hover:text-foreground text-xs transition-all duration-150 active:scale-95 cursor-pointer",
+                "flex items-center gap-2 rounded-full border border-border/70 bg-muted/40 hover:bg-muted/80 text-muted-foreground hover:text-foreground text-xs transition-all duration-300 active:scale-95 cursor-pointer",
                 isCompact ? "px-2.5 py-1.5" : "px-3.5 py-1.5"
               )}
             >
               <Icon name="lucide:search" size={13} />
-              {!isCompact && (
-                <span className="hidden md:inline font-sans text-xs">
-                  {copy.topBar.searchPlaceholder}
-                </span>
-              )}
+              <span
+                className={cn(
+                  "font-sans text-xs transition-all duration-300 overflow-hidden whitespace-nowrap",
+                  isCompact ? "max-w-0 opacity-0 hidden" : "max-w-[200px] opacity-100 hidden md:inline"
+                )}
+              >
+                {copy.topBar.searchPlaceholder}
+              </span>
               <kbd className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-background/80 border border-border/60 text-muted-foreground">
                 {copy.topBar.searchKbd}
               </kbd>
             </button>
+
+            {/* Sound Effects Toggle */}
+            <SoundToggle />
 
             {/* Theme Switcher */}
             <ThemeToggle />
@@ -365,6 +412,7 @@ export function TopBar() {
             {/* Mobile Navigation Collapse Menu Toggle Button (shown below 640px) */}
             <button
               type="button"
+              data-cuelume-tap
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={menuOpen}
@@ -372,8 +420,8 @@ export function TopBar() {
             >
               <Icon name={menuOpen ? "lucide:x" : "lucide:menu"} size={16} />
             </button>
-          </motion.div>
-        </motion.div>
+          </div>
+        </div>
 
         {/* Mobile Collapsible Navigation Menu */}
         <AnimatePresence>
@@ -395,6 +443,8 @@ export function TopBar() {
               <div className="flex flex-col gap-0.5 pb-2 border-b border-border/50">
                 <Link
                   href="/"
+                  data-cuelume-tap
+                  data-cuelume-emphasis="subtle"
                   onClick={() => setMenuOpen(false)}
                   className={cn(
                     "flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-sans transition-colors",
@@ -409,6 +459,8 @@ export function TopBar() {
 
                 <Link
                   href="/projects"
+                  data-cuelume-tap
+                  data-cuelume-emphasis="subtle"
                   onClick={() => setMenuOpen(false)}
                   className={cn(
                     "flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-sans transition-colors",
@@ -423,6 +475,8 @@ export function TopBar() {
 
                 <Link
                   href="/blog"
+                  data-cuelume-tap
+                  data-cuelume-emphasis="subtle"
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                 >
@@ -437,6 +491,8 @@ export function TopBar() {
 
                 <Link
                   href="/favorites"
+                  data-cuelume-tap
+                  data-cuelume-emphasis="subtle"
                   onClick={() => setMenuOpen(false)}
                   className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
                 >
@@ -447,6 +503,22 @@ export function TopBar() {
                   <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded border border-border/70 bg-muted/60 text-muted-foreground">
                     Soon
                   </span>
+                </Link>
+
+                <Link
+                  href="/contact"
+                  data-cuelume-tap
+                  data-cuelume-emphasis="subtle"
+                  onClick={() => setMenuOpen(false)}
+                  className={cn(
+                    "flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-sans transition-colors",
+                    pathname === "/contact"
+                      ? "bg-foreground text-background font-semibold"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  )}
+                >
+                  <Icon name="lucide:mail" size={15} />
+                  <span>Contact</span>
                 </Link>
               </div>
 
@@ -462,6 +534,8 @@ export function TopBar() {
                       <button
                         key={item.id}
                         type="button"
+                        data-cuelume-select
+                        data-cuelume-emphasis="subtle"
                         onClick={() => scrollToSection(item.id)}
                         className={cn(
                           "flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs font-sans transition-colors text-left cursor-pointer",

@@ -5,6 +5,7 @@ import { ThemeProvider } from "./theme-provider";
 import { MotionProvider } from "./motion-provider";
 import { SmoothScrollProvider } from "./smooth-scroll";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SoundProvider } from "./sound-provider";
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -16,9 +17,12 @@ export function Providers({ children }: { children: React.ReactNode }) {
     >
       <MotionProvider>
         <SmoothScrollProvider>
-          <TooltipProvider delay={150}>{children}</TooltipProvider>
+          <SoundProvider>
+            <TooltipProvider delay={150}>{children}</TooltipProvider>
+          </SoundProvider>
         </SmoothScrollProvider>
       </MotionProvider>
     </ThemeProvider>
   );
 }
+

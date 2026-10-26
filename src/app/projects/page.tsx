@@ -7,7 +7,7 @@ import { site } from "@/data/site";
 
 export const metadata: Metadata = {
   title: "Projects",
-  description: `Selected software, machine learning, and systems engineering projects by ${site.name}.`,
+  description: `Selected web and machine learning projects by ${site.name}.`,
 };
 
 export default function ProjectsPage() {
