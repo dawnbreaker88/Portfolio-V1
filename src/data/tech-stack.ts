@@ -4,7 +4,7 @@ export const techStack: TechItem[] = [
   // Languages
 // Languages
   { name: "Python", icon: "logos:python", group: "languages" },
-  { name: "C", icon: "logos:c", group: "languages" },
+
   { name: "C++", icon: "logos:c-plusplus", group: "languages" },
   { name: "Java", icon: "logos:java", group: "languages" },
   { name: "JavaScript", icon: "logos:javascript", group: "languages" },
@@ -20,12 +20,10 @@ export const techStack: TechItem[] = [
   { name: "Express.js", icon: "simple-icons:express", group: "backend" },
   { name: "FastAPI", icon: "logos:fastapi", group: "backend" },
   { name: "GraphQL", icon: "logos:graphql", group: "backend" },
-  { name: "gRPC", icon: "logos:grpc", group: "backend" },
+ 
 
   // Data Science & Machine Learning
-  { name: "NumPy", icon: "logos:numpy", group: "ai" },
-  { name: "Pandas", icon: "logos:pandas", group: "ai" },
-  { name: "Matplotlib", icon: "logos:matplotlib-icon", group: "ai" },
+ 
   { name: "scikit-learn", icon: "devicon:scikitlearn", group: "ai" },
   { name: "PyTorch", icon: "logos:pytorch-icon", group: "ai" },
   { name: "TensorFlow", icon: "logos:tensorflow", group: "ai" },
@@ -35,12 +33,12 @@ export const techStack: TechItem[] = [
   // Databases & Caching
   { name: "PostgreSQL", icon: "logos:postgresql", group: "databases" },
   { name: "Redis", icon: "logos:redis", group: "databases" },
+  {name : "MongoDB", icon : "devicon:mongodb", group: "databases"},
 
   // Infrastructure & DevOps
   { name: "Docker", icon: "logos:docker-icon", group: "devops" },
   { name: "Kubernetes", icon: "logos:kubernetes", group: "devops" },
   { name: "AWS", icon: "logos:aws", group: "devops" },
   { name: "Linux", icon: "logos:linux-tux", group: "devops" },
-  { name: "Git", icon: "logos:git-icon", group: "devops" },
-  { name: "CI/CD", icon: "mdi:infinity", group: "devops" },
+  { name: "CI/CD", icon: "mdi:infinity", group: "devops" }
 ];

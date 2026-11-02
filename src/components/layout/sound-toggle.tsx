@@ -1,17 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useSyncExternalStore } from "react";
 import { Icon } from "@/components/shared/icon";
 import { useSound } from "@/providers/sound-provider";
 import { cn } from "@/lib/utils";
 
+const emptySubscribe = () => () => {};
+
 export function SoundToggle({ className }: { className?: string }) {
   const { soundEnabled, toggleSound } = useSound();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
 
   if (!mounted) {
     return <div className="w-8 h-8 rounded-full" aria-hidden="true" />;

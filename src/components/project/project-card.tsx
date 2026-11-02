@@ -69,12 +69,6 @@ export function ProjectCard({
   const remainingStack = project.stack.slice(maxVisibleIcons);
   const remainingCount = remainingStack.length;
 
-  const externalUrl = project.liveUrl
-    ? ensureHttps(project.liveUrl)
-    : project.repoUrl
-    ? ensureHttps(project.repoUrl)
-    : null;
-
   return (
     <motion.div
       initial="rest"
@@ -119,7 +113,7 @@ export function ProjectCard({
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.85 }}
             transition={{ duration: 0.15, ease: "easeOut" }}
-            className="pointer-events-none absolute top-0 left-0 z-40 hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground text-background text-[11px] font-mono font-medium shadow-2xl backdrop-blur-md whitespace-nowrap select-none border border-background/20"
+            className="pointer-events-none absolute top-0 left-0 z-40 hidden [@media(hover:hover)_and_(pointer:fine)]:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-foreground text-background text-[11px] font-mono font-medium shadow-2xl backdrop-blur-md whitespace-nowrap select-none border border-background/20"
           >
             <span>Click to view project details</span>
             <Icon name="lucide:arrow-right" size={11} className="shrink-0" />
@@ -289,50 +283,68 @@ export function ProjectCard({
           </TooltipProvider>
         </div>
 
-        {/* "View Project ↗" External Link (or internal fallback) */}
-        {externalUrl ? (
-          <a
-            href={externalUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={(e) => {
-              e.stopPropagation();
-            }}
-            onMouseEnter={() => setIsHoveringAction(true)}
-            onMouseLeave={() => setIsHoveringAction(false)}
-            className="inline-flex items-center gap-1 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors shrink-0 z-30 cursor-pointer p-1 -m-1 rounded group/action"
-            title={`Open ${project.title} external website in new tab`}
-          >
-            <span className="group-hover/action:underline decoration-muted-foreground/50 underline-offset-4">
-              View Project
-            </span>
-            <Icon
-              name="lucide:arrow-up-right"
-              size={14}
-              className="transition-transform duration-300 group-hover/action:translate-x-0.5 group-hover/action:-translate-y-0.5"
-            />
-          </a>
-        ) : (
-          <Link
-            href={`/projects/${project.slug}`}
-            onClick={(e) => {
-              e.stopPropagation();
-              if (onSelect) onSelect(project);
-            }}
-            onMouseEnter={() => setIsHoveringAction(true)}
-            onMouseLeave={() => setIsHoveringAction(false)}
-            className="inline-flex items-center gap-1 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors shrink-0 z-30 cursor-pointer p-1 -m-1 rounded group/action"
-          >
-            <span className="group-hover/action:underline decoration-muted-foreground/50 underline-offset-4">
-              View Details
-            </span>
-            <Icon
-              name="lucide:arrow-right"
-              size={14}
-              className="transition-transform duration-300 group-hover/action:translate-x-0.5"
-            />
-          </Link>
-        )}
+        {/* Action Links (GitHub Repo + Live Project / Details) */}
+        <div className="flex items-center gap-2 shrink-0 z-30">
+          {project.repoUrl && (
+            <a
+              href={ensureHttps(project.repoUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => e.stopPropagation()}
+              onMouseEnter={() => setIsHoveringAction(true)}
+              onMouseLeave={() => setIsHoveringAction(false)}
+              className="p-1 rounded text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              title={`View ${project.title} source code on GitHub`}
+              aria-label={`View ${project.title} source code on GitHub`}
+            >
+              <Icon name="lucide:github" size={14} />
+            </a>
+          )}
+
+          {project.liveUrl ? (
+            <a
+              href={ensureHttps(project.liveUrl)}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={(e) => {
+                e.stopPropagation();
+              }}
+              onMouseEnter={() => setIsHoveringAction(true)}
+              onMouseLeave={() => setIsHoveringAction(false)}
+              className="inline-flex items-center gap-1 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer p-1 -m-1 rounded group/action"
+              title={`Open ${project.title} external website in new tab`}
+            >
+              <span className="group-hover/action:underline decoration-muted-foreground/50 underline-offset-4">
+                View Project
+              </span>
+              <Icon
+                name="lucide:arrow-up-right"
+                size={14}
+                className="transition-transform duration-300 group-hover/action:translate-x-0.5 group-hover/action:-translate-y-0.5"
+              />
+            </a>
+          ) : (
+            <Link
+              href={`/projects/${project.slug}`}
+              onClick={(e) => {
+                e.stopPropagation();
+                if (onSelect) onSelect(project);
+              }}
+              onMouseEnter={() => setIsHoveringAction(true)}
+              onMouseLeave={() => setIsHoveringAction(false)}
+              className="inline-flex items-center gap-1 text-xs font-sans font-medium text-muted-foreground hover:text-foreground transition-colors cursor-pointer p-1 -m-1 rounded group/action"
+            >
+              <span className="group-hover/action:underline decoration-muted-foreground/50 underline-offset-4">
+                View Details
+              </span>
+              <Icon
+                name="lucide:arrow-right"
+                size={14}
+                className="transition-transform duration-300 group-hover/action:translate-x-0.5"
+              />
+            </Link>
+          )}
+        </div>
       </div>
     </motion.div>
   );

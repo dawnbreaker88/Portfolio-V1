@@ -46,6 +46,8 @@ export function ImageBanner({
           ? "object-center"
           : position;
 
+  const isGif = resolvedSrc.toLowerCase().endsWith(".gif");
+
   return (
     <div
       className={`relative w-full h-[320px] sm:h-[380px] md:h-[420px] lg:h-[460px] overflow-hidden bg-background ${className || ""
@@ -53,19 +55,27 @@ export function ImageBanner({
     >
       {/* 
         1. Ambient Glow Backdrop (Active in "ambient" mode):
-        Expands the colors and motion of the GIF/image across wide desktop monitors
-        with heavy atmospheric blur so there are no awkward empty gaps or extreme cropping.
+        Expands the colors across wide desktop monitors with atmospheric blur.
+        For animated GIFs, uses a lightweight GPU-accelerated gradient mesh to avoid decoding double GIFs simultaneously.
       */}
       {fit === "ambient" && (
         <div className="absolute inset-0 overflow-hidden pointer-events-none select-none">
-          <Image
-            src={resolvedSrc}
-            alt=""
-            fill
-            unoptimized
-            aria-hidden="true"
-            className="w-full h-full object-cover blur-3xl opacity-40 dark:opacity-35 scale-125 select-none"
-          />
+          {isGif ? (
+            <div
+              className="w-full h-full opacity-40 dark:opacity-30 blur-3xl scale-125"
+              style={{
+                background: "radial-gradient(circle at 50% 50%, rgba(120, 119, 198, 0.35) 0%, rgba(59, 130, 246, 0.2) 40%, transparent 75%)",
+              }}
+            />
+          ) : (
+            <Image
+              src={resolvedSrc}
+              alt=""
+              fill
+              aria-hidden="true"
+              className="w-full h-full object-cover blur-3xl opacity-40 dark:opacity-35 scale-125 select-none"
+            />
+          )}
           <div className="absolute inset-0 bg-background/25" />
         </div>
       )}
@@ -91,8 +101,8 @@ export function ImageBanner({
         />
       </div>
 
-      {/* Top scrim for AA-legible frosted top bar (black ~45% to transparent, ~120px) */}
-      <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-black/50 via-black/20 to-transparent pointer-events-none z-10" />
+      {/* Top scrim for AA-legible frosted top bar (white in light mode, black in dark mode) */}
+      <div className="absolute top-0 inset-x-0 h-32 bg-gradient-to-b from-white/70 via-white/25 to-transparent dark:from-black/50 dark:via-black/20 pointer-events-none z-10" />
 
       {/* Bottom gradient fade seamlessly blending into page background */}
       <div className="absolute bottom-0 inset-x-0 h-36 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none z-10" />

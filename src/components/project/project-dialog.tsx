@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,6 +11,8 @@ import { TechChip } from "@/components/shared/tech-chip";
 import { buttonVariants } from "@/components/ui/button";
 import type { Project } from "@/types";
 import { cn, ensureHttps } from "@/lib/utils";
+
+const emptySubscribe = () => () => {};
 
 export type ProjectDialogProps = {
   project: Project | null;
@@ -23,14 +25,10 @@ export function ProjectDialog({
   open,
   onOpenChange,
 }: ProjectDialogProps) {
-  const [mounted, setMounted] = useState(false);
+  const mounted = useSyncExternalStore(emptySubscribe, () => true, () => false);
   const lenis = useLenis();
   const previousActiveElement = useRef<HTMLElement | null>(null);
   const closeButtonRef = useRef<HTMLButtonElement | null>(null);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   // Pause Lenis and lock body scroll when dialog opens; restore focus when closed
   useEffect(() => {

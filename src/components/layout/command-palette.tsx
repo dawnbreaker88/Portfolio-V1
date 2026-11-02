@@ -16,6 +16,8 @@ import {
 import { Icon } from "@/components/shared/icon";
 import { projects } from "@/data/projects";
 import { socials } from "@/data/socials";
+import { isBlogVisible } from "@/data/posts";
+import { isFavoritesVisible } from "@/data/favorites";
 import { toggleThemeWithTransition } from "@/lib/theme-transition";
 import { useSound } from "@/providers/sound-provider";
 import { cn, ensureHttps } from "@/lib/utils";
@@ -48,22 +50,39 @@ const PAGES = [
     description: "Direct messaging, inquiries, and collaboration",
     keywords: ["contact", "email", "reach out", "message", "hire", "collaborate", "chat"],
   },
-  {
-    name: "Blog",
-    path: "/blog",
-    icon: "lucide:book-open",
-    description: "Articles, technical notes, and essays",
-    keywords: ["blog", "writing", "articles", "essays", "posts", "reading"],
-    badge: "Soon",
-  },
-  {
-    name: "Favorites",
-    path: "/favorites",
-    icon: "lucide:bookmark",
-    description: "Curated tools, software, books, and gear",
-    keywords: ["favorites", "favourites", "tools", "gear", "bookmarks", "inspiration"],
-    badge: "Soon",
-  },
+  ...(isBlogVisible
+    ? [
+        {
+          name: "Blog",
+          path: "/blog",
+          icon: "lucide:book-open",
+          description: "Articles, technical notes, and essays",
+          keywords: ["blog", "writing", "articles", "essays", "posts", "reading"],
+          badge: undefined,
+        },
+      ]
+    : []),
+  ...(isFavoritesVisible
+    ? [
+        {
+          name: "Favorites",
+          path: "/favorites",
+          icon: "lucide:bookmark",
+          description: "Curated films, television, anime, and albums",
+          keywords: [
+            "favorites",
+            "favourites",
+            "movies",
+            "tv",
+            "anime",
+            "music",
+            "films",
+            "albums",
+          ],
+          badge: undefined,
+        },
+      ]
+    : []),
 ];
 
 // Meaningful On-Page Sections on the Home Page (excluding duplicates of top-level pages)

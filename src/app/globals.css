@@ -55,9 +55,9 @@
   --accent: #f4f4f5;
   --accent-foreground: #09090b;
   --destructive: #ef4444;
-  --border: rgb(0 0 0 / 0.08);
-  --border-strong: rgb(0 0 0 / 0.16);
-  --input: rgb(0 0 0 / 0.12);
+  --border: rgb(0 0 0 / 0.10);
+  --border-strong: rgb(0 0 0 / 0.18);
+  --input: rgb(0 0 0 / 0.14);
   --ring: rgb(0 0 0 / 0.5);
   --success: #15803d;
   --warning: #a16207;

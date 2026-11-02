@@ -33,28 +33,28 @@ export function useSound() {
 }
 
 export function SoundProvider({ children }: { children: React.ReactNode }) {
-  const [soundEnabled, setSoundEnabledState] = useState(true);
-
-  useEffect(() => {
-    // 1. Bind cuelume declarative listeners across document
-    const unbind = bind();
-
-    // 2. Load stored sound preference
+  const [soundEnabled, setSoundEnabledState] = useState(() => {
+    if (typeof window === "undefined") return true;
     try {
       const saved = localStorage.getItem("cuelume-sound-enabled");
       if (saved !== null) {
-        const isEnabled = saved === "true";
-        setSoundEnabledState(isEnabled);
-        setEnabled(isEnabled);
+        return saved === "true";
       }
     } catch {
       // Ignore storage restrictions
     }
+    return true;
+  });
+
+  useEffect(() => {
+    // 1. Bind cuelume declarative listeners across document
+    const unbind = bind();
+    setEnabled(soundEnabled);
 
     return () => {
       unbind();
     };
-  }, []);
+  }, [soundEnabled]);
 
   const toggleSound = useCallback(async () => {
     const next = !soundEnabled;

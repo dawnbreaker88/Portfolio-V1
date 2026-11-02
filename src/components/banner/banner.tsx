@@ -1,13 +1,34 @@
 "use client";
 
 import React from "react";
-import { TokyoRain } from "./tokyo-rain";
-import { KyotoDusk } from "./kyoto-banner";
-import { AuroraBanner } from "./aurora-banner";
-import { BlackBanner } from "./black-banner";
+import dynamic from "next/dynamic";
 import { ImageBanner } from "./image-banner";
 import { site } from "@/data/site";
 import type { BannerConfig, AsciiBannerVariant } from "@/types";
+
+const BannerSkeleton = ({ className }: { className?: string }) => (
+  <div className={`w-full h-[320px] sm:h-[380px] md:h-[420px] lg:h-[460px] bg-background/40 ${className || ""}`} />
+);
+
+const TokyoRain = dynamic(() => import("./tokyo-rain").then((m) => m.TokyoRain), {
+  ssr: false,
+  loading: () => <BannerSkeleton />,
+});
+
+const KyotoDusk = dynamic(() => import("./kyoto-banner").then((m) => m.KyotoDusk), {
+  ssr: false,
+  loading: () => <BannerSkeleton />,
+});
+
+const AuroraBanner = dynamic(() => import("./aurora-banner").then((m) => m.AuroraBanner), {
+  ssr: false,
+  loading: () => <BannerSkeleton />,
+});
+
+const BlackBanner = dynamic(() => import("./black-banner").then((m) => m.BlackBanner), {
+  ssr: false,
+  loading: () => <BannerSkeleton />,
+});
 
 export type BannerVariant = AsciiBannerVariant | "tokyo-rain" | "kyoto-dusk" | "aurora-fjord" | "black-prism";
 

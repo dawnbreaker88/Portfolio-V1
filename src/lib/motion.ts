@@ -58,3 +58,31 @@ export const staggerContainer = (
     },
   },
 });
+
+export const blogRowReveal: Variants = {
+  hidden: { opacity: 0, y: 12 },
+  visible: (custom: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: durationNormal,
+      delay: Math.min(custom * 0.05, 0.4),
+      ease,
+    },
+  }),
+};
+
+export const shelfItemReveal: Variants = {
+  hidden: { opacity: 0, y: 14 },
+  visible: (custom: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: durationNormal,
+      delay: Math.min(custom * 0.06, 0.4),
+      ease,
+    },
+  }),
+};
+
+

@@ -42,7 +42,7 @@ export function ProfileSection() {
     <section
       id="home"
       aria-labelledby="profile-heading"
-      className="relative flex flex-col items-center text-center mt-0 dark:-mt-16 dark:sm:-mt-20 mb-16 sm:mb-20 z-10 transition-[margin] duration-500 ease-in-out"
+      className="relative flex flex-col items-center text-center -mt-16 sm:-mt-20 mb-16 sm:mb-20 z-10 transition-[margin] duration-500 ease-in-out"
     >
       {/* Interactive Avatar with Initial Entrance Animation & Simple Fade Easter Egg */}
       <motion.div

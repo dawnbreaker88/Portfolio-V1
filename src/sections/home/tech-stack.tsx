@@ -23,6 +23,11 @@ const TABS: { id: FilterTab; label: string }[] = [
 export function TechStackSection() {
   const [activeTab, setActiveTab] = useState<FilterTab>("all");
 
+  const getTabCount = (id: FilterTab) => {
+    if (id === "all") return techStack.length;
+    return techStack.filter((item) => item.group === id).length;
+  };
+
   const filteredItems =
     activeTab === "all"
       ? techStack
@@ -35,10 +40,11 @@ export function TechStackSection() {
         index={copy.sections.techStack.index}
       />
 
-      {/* Tabs Filter Bar */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none mb-6">
+      {/* Tabs Filter Bar with Mobile Scroll Hint Mask */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-2 scrollbar-none mb-6 [mask-image:linear-gradient(to_right,black_88%,transparent_100%)] sm:[mask-image:none]">
         {TABS.map((tab) => {
           const isActive = activeTab === tab.id;
+          const count = getTabCount(tab.id);
           return (
             <button
               key={tab.id}
@@ -47,13 +53,23 @@ export function TechStackSection() {
               data-cuelume-emphasis="subtle"
               onClick={() => setActiveTab(tab.id)}
               className={cn(
-                "px-3 py-1 rounded-full text-xs font-mono transition-all duration-150 shrink-0 cursor-pointer select-none",
+                "px-3 py-1 rounded-full text-xs font-mono transition-all duration-150 shrink-0 cursor-pointer select-none inline-flex items-center",
                 isActive
                   ? "bg-foreground text-background font-medium shadow-sm"
                   : "bg-card/40 dark:bg-[#111113]/60 text-muted-foreground hover:text-foreground border border-border/60 dark:border-white/10 hover:border-border-strong dark:hover:border-white/20 hover:bg-muted/40 dark:hover:bg-[#18181b]/80"
               )}
             >
-              {tab.label}
+              <span>{tab.label}</span>
+              <span
+                className={cn(
+                  "ml-1.5 text-[10px] font-mono px-1 rounded-full",
+                  isActive
+                    ? "bg-background/25 text-background"
+                    : "text-muted-foreground/70"
+                )}
+              >
+                {count}
+              </span>
             </button>
           );
         })}

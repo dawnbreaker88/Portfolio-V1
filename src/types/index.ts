@@ -160,3 +160,40 @@ export type GitHubContributionData = {
   updatedAt: string;
 };
 
+export type BasePost = {
+  title: string;
+  date: string; // ISO format e.g. "2026-02-14"
+  summary: string;
+  tags?: string[];
+  pinned?: boolean;
+  readingTime?: string;
+};
+
+export type ExternalPost = BasePost & {
+  href: string;
+  sourceLabel?: string; // default "old blog"
+  slug?: never;
+};
+
+export type InternalPost = BasePost & {
+  slug: string;
+  href?: never;
+  sourceLabel?: never;
+};
+
+export type Post = ExternalPost | InternalPost;
+
+export type FavoriteKind = "movie" | "tv" | "anime" | "music";
+
+export type Favorite = {
+  kind: FavoriteKind;
+  title: string;
+  creator: string; // director, showrunner, studio or artist
+  year: string;
+  meta?: string; // e.g. "3 seasons", "26 eps"
+  note: string; // <=120 chars
+  href?: string;
+  cover?: string;
+};
+
+

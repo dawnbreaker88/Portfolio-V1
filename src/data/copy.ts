@@ -91,4 +91,11 @@ export const copy = {
     devops: "DevOps & Cloud",
     ai: "AI",
   },
+  blog: {
+    intro: "Older posts live on my previous blog. New writing will land here.",
+  },
+  favorites: {
+    intro: "A short shelf for each. Hover for why.",
+    attribution: undefined as string | undefined,
+  },
 } as const;

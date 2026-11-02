@@ -30,7 +30,7 @@ export const site: SiteConfig = {
  
   bio: [
     <>
-      I'm Prabhath, a 19-year-old student interested in AI, engineering, and the endless process of{" "}
+      I&apos;m Prabhath, a 19-year-old student interested in AI, engineering, and the endless process of{" "}
       <HighlightText
         className="text-foreground"
         text="figuring things out"
@@ -40,7 +40,7 @@ export const site: SiteConfig = {
     </>,
 
     <>
-      I'm particularly curious about{" "}
+      I&apos;m particularly curious about{" "}
       <HighlightText
         className="text-foreground"
         text="LLMs and AI agents"
@@ -56,7 +56,7 @@ export const site: SiteConfig = {
     </>,
 
     <>
-      Beyond code, I'm drawn to design, music, and cinema. I like exploring different disciplines,{" "}
+      Beyond code, I&apos;m drawn to design, music, and cinema. I like exploring different disciplines,{" "}
       <HighlightText
         className="text-foreground"
         text="connecting ideas that might seem unrelated"
@@ -79,6 +79,8 @@ export const site: SiteConfig = {
   avatars: [
     
     "/tenma.jpeg",
+    "/chibi.png",
+    "/min.png"
   ],
   githubUser: "prabhath",
   nav: [

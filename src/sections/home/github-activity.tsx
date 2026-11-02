@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { site } from "@/data/site";
 import { copy } from "@/data/copy";
@@ -20,39 +20,39 @@ export function GithubActivitySection() {
   const [status, setStatus] = useState<"loading" | "success" | "error">("loading");
   const [data, setData] = useState<GitHubContributionData | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const loadContributions = useCallback(async (isMounted = true) => {
-    setStatus("loading");
-    setErrorMessage(null);
-
-    try {
-      const res = await fetch("/api/github-contributions");
-      const json = await res.json();
-
-      if (!res.ok) {
-        throw new Error(json.error || `Request failed with status ${res.status}`);
-      }
-
-      if (isMounted) {
-        setData(json);
-        setStatus("success");
-      }
-    } catch (err: unknown) {
-      if (isMounted) {
-        const msg = err instanceof Error ? err.message : "Failed to load GitHub activity";
-        setErrorMessage(msg);
-        setStatus("error");
-      }
-    }
-  }, []);
+  const [retryKey, setRetryKey] = useState(0);
 
   useEffect(() => {
-    let isMounted = true;
-    loadContributions(isMounted);
+    let ignore = false;
+
+    async function fetchContributions() {
+      try {
+        const res = await fetch("/api/github-contributions");
+        const json = await res.json();
+
+        if (!res.ok) {
+          throw new Error(json.error || `Request failed with status ${res.status}`);
+        }
+
+        if (!ignore) {
+          setData(json);
+          setStatus("success");
+        }
+      } catch (err: unknown) {
+        if (!ignore) {
+          const msg = err instanceof Error ? err.message : "Failed to load GitHub activity";
+          setErrorMessage(msg);
+          setStatus("error");
+        }
+      }
+    }
+
+    fetchContributions();
+
     return () => {
-      isMounted = false;
+      ignore = true;
     };
-  }, [loadContributions]);
+  }, [retryKey]);
 
   const profileUsername = data?.username || site.githubUser || "dawnbreaker88";
 
@@ -76,16 +76,22 @@ export function GithubActivitySection() {
         action={profileAction}
       />
 
-      <p className="font-mono text-xs text-muted-foreground mb-4 text-left">
-        {status === "success" && data
-          ? `${data.totalContributions.toLocaleString()} contributions in the last year`
-          : status === "loading"
-          ? "Loading live contributions from GitHub..."
-          : "GitHub contribution activity"}
-      </p>
+      {/* Summary Stat Chips */}
+      <div className="flex flex-wrap items-center gap-2 mb-4 text-xs font-mono text-left">
+        {/* <span className="px-2.5 py-1 rounded-full border border-border/80 bg-card/70 text-foreground font-medium shadow-2xs">
+          {status === "success" && data
+            ? `${data.totalContributions.toLocaleString()} contributions`
+            : status === "loading"
+            ? "Syncing GitHub data..."
+            : "GitHub Activity"}
+        </span> */}
+       
+       
+      </div>
 
-      {/* Contribution Heatmap Container */}
-      <div className="p-4 sm:p-5 rounded-2xl border border-border/70 bg-card/40 backdrop-blur-sm overflow-x-auto text-left">
+      {/* Contribution Heatmap Container with Horizontal Scroll & Mobile Swipe Cue */}
+      <div className="relative group/heatmap">
+        <div className="p-4 sm:p-5 rounded-2xl border border-border/70 bg-card/40 backdrop-blur-sm overflow-x-auto text-left scrollbar-none">
         {status === "loading" && (
           <div className="w-full flex flex-col gap-3 min-w-[720px] select-none py-1">
             {/* Header row skeleton */}
@@ -131,7 +137,11 @@ export function GithubActivitySection() {
             </div>
             <div className="flex items-center gap-2 pt-2">
               <button
-                onClick={() => loadContributions()}
+                onClick={() => {
+                  setStatus("loading");
+                  setErrorMessage(null);
+                  setRetryKey((k) => k + 1);
+                }}
                 className="px-3 py-1 text-xs font-mono rounded-full border border-border bg-card hover:bg-muted text-foreground transition-colors cursor-pointer"
               >
                 Retry
@@ -156,7 +166,8 @@ export function GithubActivitySection() {
             blockSize={11}
             blockMargin={3}
             blockRadius={2}
-            className="w-full text-xs font-mono"
+            fontSize={10}
+            className="w-full text-[10px] font-mono text-muted-foreground"
           >
             <ContributionGraphCalendar>
               {({ activity, dayIndex, weekIndex }) => (
@@ -195,6 +206,13 @@ export function GithubActivitySection() {
             </ContributionGraphFooter>
           </ContributionGraph>
         )}
+        </div>
+
+        {/* Mobile Swipe Cue (shows on small screens to inform user they can swipe across 53 weeks) */}
+        <div className="sm:hidden flex items-center justify-between pt-2 px-1 text-[11px] font-mono text-muted-foreground/60 select-none">
+          <span>← Scroll for full year</span>
+          <span>Recent activity →</span>
+        </div>
       </div>
     </section>
   );

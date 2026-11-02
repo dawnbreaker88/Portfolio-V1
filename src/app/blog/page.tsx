@@ -1,18 +1,90 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Suspense } from "react";
 import { Icon } from "@/components/shared/icon";
 import { Footer } from "@/sections/home/footer";
+import { BlogList } from "@/components/blog/blog-list";
+import { posts } from "@/data/posts";
+import { copy } from "@/data/copy";
 import { site } from "@/data/site";
 
-export const metadata: Metadata = {
-  title: "Blog",
-  description: `Writing and essays on software engineering, deep learning, and systems architecture by ${site.name}.`,
-};
+interface BlogPageProps {
+  searchParams: Promise<{ tag?: string }>;
+}
+
+export async function generateMetadata({
+  searchParams,
+}: BlogPageProps): Promise<Metadata> {
+  const { tag } = await searchParams;
+  const isFiltered = Boolean(tag);
+  const shouldNoIndex = isFiltered || posts.length < 2;
+
+  const title = isFiltered
+    ? `Blog (${tag}) | ${site.name}`
+    : `Blog | ${site.name}`;
+
+  const description =
+    "Technical essays, systems explorations, and explainers on machine learning, AI, and software architecture.";
+
+  return {
+    title,
+    description,
+    alternates: {
+      canonical: `${site.url}/blog`,
+    },
+    robots: shouldNoIndex
+      ? {
+          index: false,
+          follow: false,
+        }
+      : {
+          index: true,
+          follow: true,
+        },
+    openGraph: {
+      title,
+      description,
+      url: `${site.url}/blog`,
+      siteName: site.name,
+      type: "website",
+    },
+    twitter: {
+      card: "summary",
+      title,
+      description,
+    },
+  };
+}
 
 export default function BlogPage() {
+  const itemListJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: `Blog Posts by ${site.name}`,
+    description: copy.blog.intro,
+    numberOfItems: posts.length,
+    itemListElement: posts.map((post, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: post.title,
+      description: post.summary,
+      url:
+        "href" in post && post.href
+          ? post.href
+          : `${site.url}/blog/${post.slug}`,
+    })),
+  };
+
   return (
     <div className="flex-1 flex flex-col min-h-screen">
-      <main className="flex-1 w-full max-w-2xl mx-auto px-6 pt-24 sm:pt-28 pb-16 z-10 text-left">
+      {/* ItemList JSON-LD for rich snippet indexing */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }}
+      />
+
+      <main className="flex-1 w-full max-w-2xl sm:max-w-3xl mx-auto px-6 pt-24 sm:pt-28 pb-16 z-10 text-left">
+        {/* Breadcrumb back link */}
         <Link
           href="/"
           className="inline-flex items-center gap-1.5 font-mono text-xs text-muted-foreground hover:text-foreground mb-8 transition-colors"
@@ -21,33 +93,26 @@ export default function BlogPage() {
           <span>Back to home</span>
         </Link>
 
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <h1 className="font-display text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
-              Blog
-            </h1>
-            <span className="text-[10px] font-mono uppercase tracking-wider px-2 py-0.5 rounded-full border border-border/80 bg-muted/50 text-muted-foreground">
-              Coming Soon
-            </span>
-          </div>
-          <p className="font-sans text-sm sm:text-base text-muted-foreground leading-relaxed">
-          Things worth understanding deserve more than a passing glance.
-
-A collection of technical explainers, concepts I've explored, and ideas I've worked through in writing.
-
-Currently exploring: machine learning, AI, and the systems behind the abstractions. 
+        {/* Page Header */}
+        <header className="space-y-3 mb-10 sm:mb-12">
+          <h1 className="font-display text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            Blog
+          </h1>
+          <p className="font-mono text-xs sm:text-sm text-muted-foreground leading-relaxed">
+            {copy.blog.intro}
           </p>
-        </div>
+        </header>
 
-        {/* Subtle empty state aesthetic */}
-        <div className="mt-12 p-8 rounded-2xl border border-dashed border-border/70 bg-card/30 text-center flex flex-col items-center justify-center">
-          <div className="size-10 rounded-full border border-border/70 bg-muted/50 flex items-center justify-center text-muted-foreground mb-3">
-            <Icon name="lucide:book-open" size={18} />
-          </div>
-          <p className="font-mono text-xs text-muted-foreground">
-            No published posts yet. Check back soon!
-          </p>
-        </div>
+        {/* Typographic Posts Index */}
+        <Suspense
+          fallback={
+            <div className="py-12 flex items-center justify-center font-mono text-xs text-muted-foreground">
+              Loading posts...
+            </div>
+          }
+        >
+          <BlogList posts={posts} />
+        </Suspense>
       </main>
 
       <Footer />

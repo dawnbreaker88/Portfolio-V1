@@ -738,7 +738,7 @@ export function tokyoRain(): Frame {
 
   // --- light: the glow round every light, what it falls on, the haze --------
   const blur = (src: Float32Array, rad: number, passes: number): Float32Array => {
-    let a = src.slice();
+    const a = src.slice();
     const b = new Float32Array(N);
     const pre = new Float32Array(Math.max(W, H) + 1);
     const n = 2 * rad + 1;

@@ -8,12 +8,59 @@ import { motion, AnimatePresence, useScroll, useMotionValueEvent } from "motion/
 import { useLenis } from "lenis/react";
 import { site } from "@/data/site";
 import { copy } from "@/data/copy";
+import { isBlogVisible } from "@/data/posts";
+import { isFavoritesVisible } from "@/data/favorites";
 import { Icon } from "@/components/shared/icon";
 import { ThemeToggle } from "./theme-toggle";
 import { SoundToggle } from "./sound-toggle";
 import { CommandPalette } from "./command-palette";
-import { springSoft } from "@/lib/motion";
 import { cn } from "@/lib/utils";
+
+const UNDERLINE_PATHS = {
+ home: "M 1 3.6 C 22 2.1, 53 4.8, 99 3.1",
+  projects: "M 1 3.7 C 18 2.5, 35 4.9, 57 3.5 S 84 2.2, 99 3.2",
+  more: "M 1 3.3 C 24 4.7, 51 2.1, 73 3.4 S 91 4.1, 99 3.5",
+  contact: "M 1 3.5 C 20 2.1, 43 4.8, 65 3.4 S 87 2.3, 99 3.3", 
+} as const;
+
+function DrawnUnderline({
+  isVisible,
+  path,
+}: {
+  isVisible: boolean;
+  path: string;
+}) {
+  return (
+    <AnimatePresence>
+      {isVisible && (
+        <motion.svg
+          viewBox="0 0 100 6"
+          fill="none"
+          preserveAspectRatio="none"
+          aria-hidden="true"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.12 }}
+          className="absolute bottom-0 left-2.5 w-[calc(100%-20px)] h-[5px] pointer-events-none overflow-visible text-foreground dark:text-white dark:drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]"
+        >
+          <motion.path
+            d={path}
+            stroke="currentColor"
+            strokeWidth="2.2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            initial={{ pathLength: 0 }}
+            animate={{ pathLength: 1 }}
+            transition={{
+              pathLength: { duration: 0.28, ease: [0.16, 1, 0.3, 1] },
+            }}
+          />
+        </motion.svg>
+      )}
+    </AnimatePresence>
+  );
+}
 
 export function TopBar() {
   const pathname = usePathname();
@@ -23,6 +70,7 @@ export function TopBar() {
   const [isVisible, setIsVisible] = useState(true);
   const [menuOpen, setMenuOpen] = useState(false);
   const [moreOpen, setMoreOpen] = useState(false);
+  const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const moreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [activeSection, setActiveSection] = useState<string>("home");
   const [profileBottom, setProfileBottom] = useState(520);
@@ -32,13 +80,14 @@ export function TopBar() {
   const { scrollY } = useScroll();
   const lenis = useLenis();
 
-  // Close dropdowns and update layout state on route changes
-  useEffect(() => {
+  const [prevPathname, setPrevPathname] = useState(pathname);
+  if (prevPathname !== pathname) {
+    setPrevPathname(pathname);
     setIsVisible(true);
     setIsCompact(pathname !== "/" || (typeof window !== "undefined" && window.scrollY > 60));
     setMoreOpen(false);
     setMenuOpen(false);
-  }, [pathname]);
+  }
 
   // Handle escape key for dropdown
   useEffect(() => {
@@ -60,6 +109,7 @@ export function TopBar() {
   const handleMouseLeaveMore = () => {
     moreTimeoutRef.current = setTimeout(() => {
       setMoreOpen(false);
+      setHoveredTab((prev) => (prev === "more" ? null : prev));
     }, 150);
   };
 
@@ -192,6 +242,16 @@ export function TopBar() {
     }
   };
 
+  const getActiveTab = () => {
+    if (pathname === "/contact") return "contact";
+    if (pathname.startsWith("/projects")) return "projects";
+    if (pathname === "/blog" || pathname === "/favorites" || moreOpen) return "more";
+    if (pathname === "/") return "home";
+    return "";
+  };
+  const activeTab = getActiveTab();
+  const currentTab = hoveredTab ?? activeTab;
+
   return (
     <>
       <motion.header
@@ -222,26 +282,31 @@ export function TopBar() {
               href="/"
               data-cuelume-tap
               data-cuelume-emphasis="subtle"
-              className="font-display text-xl sm:text-2xl text-foreground font-normal tracking-tight hover:opacity-80 transition-opacity shrink-0"
+              className="font-display text-xl sm:text-2xl text-foreground dark:text-white font-normal tracking-tight hover:opacity-80 transition-opacity shrink-0"
             >
               {site.name}
             </Link>
 
             {/* Desktop Navigation Links: Home, Projects, More (Hover), Contact */}
-            <nav className="hidden sm:flex items-center gap-1 text-xs font-sans">
+            <nav
+              onMouseLeave={() => setHoveredTab(null)}
+              className="hidden sm:flex items-center gap-1 text-xs font-sans"
+            >
               {/* Home */}
               <Link
                 href="/"
                 data-cuelume-tap
                 data-cuelume-emphasis="subtle"
+                onMouseEnter={() => setHoveredTab("home")}
                 className={cn(
-                  "px-3 py-1.5 rounded-full transition-colors font-medium",
-                  pathname === "/"
-                    ? "text-foreground bg-muted/70 font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                  "relative px-3 py-1.5 transition-colors font-medium",
+                  currentTab === "home"
+                    ? "text-foreground dark:text-white font-semibold"
+                    : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                 )}
               >
-                Home
+                <span>Home</span>
+                <DrawnUnderline isVisible={currentTab === "home"} path={UNDERLINE_PATHS.home} />
               </Link>
 
               {/* Projects */}
@@ -249,20 +314,25 @@ export function TopBar() {
                 href="/projects"
                 data-cuelume-tap
                 data-cuelume-emphasis="subtle"
+                onMouseEnter={() => setHoveredTab("projects")}
                 className={cn(
-                  "px-3 py-1.5 rounded-full transition-colors font-medium",
-                  pathname.startsWith("/projects")
-                    ? "text-foreground bg-muted/70 font-semibold"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                  "relative px-3 py-1.5 transition-colors font-medium",
+                  currentTab === "projects"
+                    ? "text-foreground dark:text-white font-semibold"
+                    : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                 )}
               >
-                Projects
+                <span>Projects</span>
+                <DrawnUnderline isVisible={currentTab === "projects"} path={UNDERLINE_PATHS.projects} />
               </Link>
 
               {/* More (Hover Dropdown) */}
               <div
                 className="relative"
-                onMouseEnter={handleMouseEnterMore}
+                onMouseEnter={() => {
+                  handleMouseEnterMore();
+                  setHoveredTab("more");
+                }}
                 onMouseLeave={handleMouseLeaveMore}
               >
                 <button
@@ -272,10 +342,10 @@ export function TopBar() {
                   aria-expanded={moreOpen}
                   aria-haspopup="true"
                   className={cn(
-                    "inline-flex items-center gap-1 px-3 py-1.5 rounded-full transition-colors font-medium cursor-pointer",
-                    moreOpen || pathname === "/blog" || pathname === "/favorites"
-                      ? "text-foreground bg-muted/70 font-semibold"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                    "relative inline-flex items-center gap-1 px-3 py-1.5 transition-colors font-medium cursor-pointer",
+                    currentTab === "more"
+                      ? "text-foreground dark:text-white font-semibold"
+                      : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                   )}
                 >
                   <span>More</span>
@@ -283,10 +353,14 @@ export function TopBar() {
                     name="lucide:chevron-down"
                     size={13}
                     className={cn(
-                      "transition-transform duration-200 text-muted-foreground/80",
-                      moreOpen && "rotate-180 text-foreground"
+                      "transition-transform duration-200",
+                      currentTab === "more"
+                        ? "text-foreground dark:text-white"
+                        : "text-zinc-500 dark:text-white/70",
+                      moreOpen && "rotate-180"
                     )}
                   />
+                  <DrawnUnderline isVisible={currentTab === "more"} path={UNDERLINE_PATHS.more} />
                 </button>
 
                 {/* Hover Dropdown Menu */}
@@ -299,80 +373,74 @@ export function TopBar() {
                       transition={{ duration: 0.16, ease: "easeOut" }}
                       className="absolute top-full left-0 mt-1 w-44 rounded-xl border border-border/80 bg-background/95 dark:bg-[#111113]/95 backdrop-blur-xl shadow-xl p-1.5 flex flex-col gap-0.5 z-50"
                     >
-                      <Link
-                        href="/blog"
-                        data-cuelume-tap
-                        data-cuelume-emphasis="subtle"
-                        onClick={() => setMoreOpen(false)}
-                        className={cn(
-                          "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
-                          pathname === "/blog"
-                            ? "bg-muted/70 text-foreground font-semibold"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                        )}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon name="lucide:book-open" size={13} className="text-muted-foreground group-hover:text-foreground" />
-                          <span>Blog</span>
-                        </div>
-                        <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded border border-border/70 bg-muted/60 text-muted-foreground">
-                          Soon
-                        </span>
-                      </Link>
+                      {isBlogVisible && (
+                        <Link
+                          href="/blog"
+                          data-cuelume-tap
+                          data-cuelume-emphasis="subtle"
+                          onClick={() => setMoreOpen(false)}
+                          className={cn(
+                            "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
+                            pathname === "/blog"
+                              ? "bg-muted/70 text-foreground dark:text-white font-semibold"
+                              : "text-muted-foreground hover:text-foreground dark:text-white/75 dark:hover:text-white hover:bg-muted/50"
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Icon name="lucide:book-open" size={13} className="text-muted-foreground group-hover:text-foreground dark:group-hover:text-white" />
+                            <span>Blog</span>
+                          </div>
+                        </Link>
+                      )}
 
-                      <Link
-                        href="/favorites"
-                        data-cuelume-tap
-                        data-cuelume-emphasis="subtle"
-                        onClick={() => setMoreOpen(false)}
-                        className={cn(
-                          "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
-                          pathname === "/favorites"
-                            ? "bg-muted/70 text-foreground font-semibold"
-                            : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
-                        )}
-                      >
-                        <div className="flex items-center gap-2">
-                          <Icon name="lucide:bookmark" size={13} className="text-muted-foreground group-hover:text-foreground" />
-                          <span>Favorites</span>
-                        </div>
-                        <span className="text-[10px] font-mono uppercase tracking-wider px-1.5 py-0.5 rounded border border-border/70 bg-muted/60 text-muted-foreground">
-                          Soon
-                        </span>
-                      </Link>
+                      {isFavoritesVisible && (
+                        <Link
+                          href="/favorites"
+                          data-cuelume-tap
+                          data-cuelume-emphasis="subtle"
+                          onClick={() => setMoreOpen(false)}
+                          className={cn(
+                            "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
+                            pathname === "/favorites"
+                              ? "bg-muted/70 text-foreground dark:text-white font-semibold"
+                              : "text-muted-foreground hover:text-foreground dark:text-white/75 dark:hover:text-white hover:bg-muted/50"
+                          )}
+                        >
+                          <div className="flex items-center gap-2">
+                            <Icon name="lucide:bookmark" size={13} className="text-muted-foreground group-hover:text-foreground dark:group-hover:text-white" />
+                            <span>Favorites</span>
+                          </div>
+                        </Link>
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
               {/* Direct Navigation: Contact */}
-              <motion.div
-                whileHover={{ y: -1, scale: 1.02 }}
-                whileTap={{ scale: 0.96 }}
-                transition={{ type: "spring", stiffness: 400, damping: 25 }}
+              <Link
+                href="/contact"
+                data-cuelume-tap
+                data-cuelume-emphasis="subtle"
+                onMouseEnter={() => setHoveredTab("contact")}
+                className={cn(
+                  "relative group px-3 py-1.5 transition-colors font-medium inline-flex items-center gap-1.5",
+                  currentTab === "contact"
+                    ? "text-foreground dark:text-white font-semibold"
+                    : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
+                )}
               >
-                <Link
-                  href="/contact"
-                  data-cuelume-tap
-                  data-cuelume-emphasis="subtle"
+                <span>Contact</span>
+                <span
                   className={cn(
-                    "group px-3 py-1.5 rounded-full transition-all font-medium inline-flex items-center gap-1.5",
-                    pathname === "/contact"
-                      ? "text-foreground bg-muted/70 font-semibold shadow-xs"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted/40"
+                    "size-1.5 rounded-full transition-transform duration-200",
+                    currentTab === "contact"
+                      ? "bg-emerald-400 scale-110 shadow-xs"
+                      : "bg-muted-foreground/40 dark:bg-white/40 group-hover:bg-foreground dark:group-hover:bg-white group-hover:scale-125"
                   )}
-                >
-                  <span>Contact</span>
-                  <span
-                    className={cn(
-                      "size-1.5 rounded-full transition-transform duration-200",
-                      pathname === "/contact"
-                        ? "bg-emerald-500 scale-110 shadow-xs"
-                        : "bg-muted-foreground/35 group-hover:bg-foreground group-hover:scale-125"
-                    )}
-                  />
-                </Link>
-              </motion.div>
+                />
+                <DrawnUnderline isVisible={currentTab === "contact"} path={UNDERLINE_PATHS.contact} />
+              </Link>
             </nav>
           </div>
 
@@ -473,37 +541,35 @@ export function TopBar() {
                   <span>Projects</span>
                 </Link>
 
-                <Link
-                  href="/blog"
-                  data-cuelume-tap
-                  data-cuelume-emphasis="subtle"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Icon name="lucide:book-open" size={15} />
-                    <span>Blog</span>
-                  </div>
-                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded border border-border/70 bg-muted/60 text-muted-foreground">
-                    Soon
-                  </span>
-                </Link>
+                {isBlogVisible && (
+                  <Link
+                    href="/blog"
+                    data-cuelume-tap
+                    data-cuelume-emphasis="subtle"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon name="lucide:book-open" size={15} />
+                      <span>Blog</span>
+                    </div>
+                  </Link>
+                )}
 
-                <Link
-                  href="/favorites"
-                  data-cuelume-tap
-                  data-cuelume-emphasis="subtle"
-                  onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-                >
-                  <div className="flex items-center gap-2.5">
-                    <Icon name="lucide:bookmark" size={15} />
-                    <span>Favorites</span>
-                  </div>
-                  <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded border border-border/70 bg-muted/60 text-muted-foreground">
-                    Soon
-                  </span>
-                </Link>
+                {isFavoritesVisible && (
+                  <Link
+                    href="/favorites"
+                    data-cuelume-tap
+                    data-cuelume-emphasis="subtle"
+                    onClick={() => setMenuOpen(false)}
+                    className="flex items-center justify-between px-3 py-2 rounded-xl text-xs font-sans text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <Icon name="lucide:bookmark" size={15} />
+                      <span>Favorites</span>
+                    </div>
+                  </Link>
+                )}
 
                 <Link
                   href="/contact"
