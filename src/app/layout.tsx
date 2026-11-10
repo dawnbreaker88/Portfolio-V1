@@ -6,13 +6,58 @@ import { site } from "@/data/site";
 import { socials } from "@/data/socials";
 import "./globals.css";
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
+  ? process.env.NEXT_PUBLIC_SITE_URL
+  : process.env.VERCEL_PROJECT_PRODUCTION_URL
+  ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  : process.env.VERCEL_URL
+  ? `https://${process.env.VERCEL_URL}`
+  : site.url;
+
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: `${site.name}`,
+    default: `${site.name} — Portfolio`,
     template: `%s | ${site.name}`,
   },
   description: site.description,
+  keywords: [
+    "Prabhath",
+    "Portfolio",
+    "Software Engineer",
+    "Machine Learning",
+    "Artificial Intelligence",
+    "Full Stack Developer",
+    "Next.js",
+    "React",
+    "Vanka Prabhath",
+  ],
+  authors: [{ name: site.name, url: siteUrl }],
+  creator: site.name,
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: siteUrl,
+    siteName: site.name,
+    title: `${site.name} — Portfolio`,
+    description: site.description,
+    images: [
+      {
+        url: "/og.png",
+        width: 1200,
+        height: 630,
+        alt: `${site.name} — Portfolio Preview`,
+        type: "image/png",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${site.name} — Portfolio`,
+    description: site.description,
+    images: ["/og.png"],
+    creator: "@dawnbreaker88",
+  },
   icons: {
     icon: [
       { url: "/icon-32.png", sizes: "32x32", type: "image/png" },
