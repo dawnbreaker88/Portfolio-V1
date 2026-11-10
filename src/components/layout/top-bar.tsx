@@ -264,7 +264,7 @@ export function TopBar() {
           duration: 0.28,
           ease: [0.22, 1, 0.36, 1],
         }}
-        className="fixed top-0 inset-x-0 z-50 flex flex-col items-center pointer-events-none pt-2 sm:pt-3 px-3 sm:px-6"
+        className="fixed top-0 inset-x-0 z-50 flex flex-col items-center pointer-events-none pt-2 sm:pt-3 px-3 sm:px-6 will-change-transform"
       >
         {/* Main Glass Bar: smoothly transitions between full-width and compact pill */}
         <div

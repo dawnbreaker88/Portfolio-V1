@@ -527,12 +527,17 @@ export function AuroraBanner({ className }: { className?: string }) {
     canvas.width = W * cellW;
     canvas.height = H * cellH;
 
-    let animId: number;
+    let animId = 0;
     let lastTime = 0;
     const interval = 1000 / auroraMeta.fps;
     let t = 0;
+    let isVisible = true;
 
     const renderFrame = (now: number) => {
+      if (!isVisible) {
+        animId = 0;
+        return;
+      }
       animId = requestAnimationFrame(renderFrame);
       if (now - lastTime < interval) return;
       lastTime = now;
@@ -564,8 +569,23 @@ export function AuroraBanner({ className }: { className?: string }) {
       }
     };
 
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        isVisible = entry.isIntersecting;
+        if (isVisible && !animId) {
+          lastTime = performance.now();
+          animId = requestAnimationFrame(renderFrame);
+        }
+      },
+      { threshold: 0 }
+    );
+    observer.observe(canvas);
+
     animId = requestAnimationFrame(renderFrame);
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animId);
+      observer.disconnect();
+    };
   }, []);
 
   return (

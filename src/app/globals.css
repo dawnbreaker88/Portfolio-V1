@@ -112,6 +112,11 @@ html.lenis {
   -ms-overflow-style: none !important;
 }
 
+html.lenis,
+html.lenis body {
+  height: auto !important;
+}
+
 body,
 html.lenis body {
   scrollbar-width: none !important;

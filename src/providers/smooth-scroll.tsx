@@ -13,14 +13,14 @@ export function SmoothScrollProvider({
     <ReactLenis
       root
       options={{
-        lerp: 0.08,
-        duration: 1.2,
-        easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+        lerp: 0.12,
+        duration: 1.0,
         orientation: "vertical",
         gestureOrientation: "vertical",
         smoothWheel: true,
-        wheelMultiplier: 0.95,
-        touchMultiplier: 1.5,
+        wheelMultiplier: 1.0,
+        touchMultiplier: 1.0,
+        syncTouch: false,
         autoRaf: true,
       }}
     >

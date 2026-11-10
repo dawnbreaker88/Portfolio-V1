@@ -46,7 +46,7 @@ export default function RootLayout({
       lang="en"
       suppressHydrationWarning
       style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-      className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable} h-full antialiased [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
+      className={`${fontDisplay.variable} ${fontSans.variable} ${fontMono.variable} antialiased [scrollbar-width:none] [&::-webkit-scrollbar]:hidden`}
     >
       <head>
         <script
@@ -56,7 +56,7 @@ export default function RootLayout({
       </head>
       <body
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        className="min-h-full flex flex-col bg-background text-foreground [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        className="min-h-screen flex flex-col bg-background text-foreground [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
         <Providers>
           <TopBar />
