@@ -131,7 +131,7 @@ export function HomeView({
   }, [lenis]);
 
   return (
-    <div className="relative min-h-screen bg-background text-foreground flex flex-col overflow-x-hidden">
+    <div className="relative min-h-screen bg-background text-foreground flex flex-col overflow-x-clip">
       <IconPillNav />
 
       {/* Universal Banner: visible in both dark mode and white theme with hourly rotation */}

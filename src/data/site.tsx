@@ -24,9 +24,9 @@ export const site: SiteConfig = {
       title: "Curious about everything",
     },
   ],
-  url: "https://prabhath.dev",
+  url: "https://prabs.vercel.app",
   description:
-    "Personal portfolio of Prabhath — Computer Science student building software, exploring AI, and developing full-stack systems.",
+    "Personal portfolio of Prabhath — undergrad AI student building software, exploring AI, and developing full-stack systems.",
  
   bio: [
     <>
@@ -75,12 +75,13 @@ export const site: SiteConfig = {
     variant: "tokyo",
     alt: "Tokyo Rain cyberpunk ASCII simulation",
   },
-  avatar: "/boby.jpeg",
+  avatar: "/min.png",
   avatars: [
     
-    "/tenma.jpeg",
+    "/min.png",
     "/chibi.png",
-    "/min.png"
+    "/tenma.jpeg",
+    "/boby.jpeg"
   ],
   githubUser: "prabhath",
   nav: [

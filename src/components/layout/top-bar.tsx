@@ -166,23 +166,23 @@ export function TopBar() {
       return;
     }
 
-    // 3. Smooth downward scroll threshold (50px)
+    // 3. Smooth downward scroll threshold (75px)
     if (diff > 0) {
       accumulatedUp.current = 0;
       accumulatedDown.current += diff;
 
-      if (accumulatedDown.current > 50) {
+      if (accumulatedDown.current > 75) {
         setIsVisible(false);
         if (menuOpen) setMenuOpen(false);
         if (moreOpen) setMoreOpen(false);
       }
     }
-    // 4. Smooth upward scroll threshold (20px)
+    // 4. Smooth upward scroll threshold (35px)
     else if (diff < 0) {
       accumulatedDown.current = 0;
       accumulatedUp.current += Math.abs(diff);
 
-      if (accumulatedUp.current > 20) {
+      if (accumulatedUp.current > 35) {
         setIsVisible(true);
       }
     }
