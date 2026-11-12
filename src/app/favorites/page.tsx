@@ -13,7 +13,6 @@ export async function generateMetadata(): Promise<Metadata> {
   const description = `Curated films, television, anime, and albums favored by ${site.name}.`;
 
   return {
-    title,
     description,
     alternates: {
       canonical: `${site.url}/favorites`,

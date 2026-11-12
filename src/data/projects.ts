@@ -40,29 +40,34 @@ export const projects: Project[] = [
   },
 
   {
-    slug: "loopers",
-    title: "Loopers",
-    summary:
-      "A campus-focused quick-commerce platform bringing everyday essentials and on-demand document printing to college students.",
-    about:
-      "Loopers tackles a familiar campus problem: getting everyday essentials and printed documents without unnecessary hassle or expense. Inspired by quick-commerce platforms, it brings product ordering, checkout, document-printing requests, and order management into a single experience built around student needs.",
-    highlights: [
-      "Launched a student-focused platform used by 200+ students.",
-      "Implemented 20+ features spanning authentication, ordering, printing, checkout, and analytics.",
-      "Built a responsive React Progressive Web App with a Node.js backend and automated deployments.",
-    ],
-    image: "/projects/loopers.png",
-    imageAlt: "Loopers campus quick-commerce platform",
-    context:
-      "A student-oriented quick-commerce platform designed around hyperlocal delivery and document printing, with customer-facing features and administrative workflows.",
-    details: [
-      "Developed a responsive React Progressive Web App for browsing products and placing orders.",
-      "Built backend APIs using Express.js and MongoDB Atlas.",
-      "Implemented JWT authentication and role-based access control.",
-      "Developed product catalog, cart, checkout, order management, and document-printing workflows.",
-      "Used Zustand for frontend state management.",
-      "Integrated Cloudinary for media management and deployed through Render and Vercel.",
-    ],
+   slug: "loopers",
+  title: "Loopers",
+  summary:
+    "A campus-focused quick-commerce Progressive Web App for ordering everyday essentials and requesting on-demand document printing.",
+
+  about:
+    "Loopers is a student-focused quick-commerce platform designed to simplify access to everyday essentials and document printing on campus. I primarily worked on the product-facing side, translating the platform's requirements into a responsive user experience, implementing key frontend features, and taking the application from development to deployment. I also contributed to additional backend features and ongoing platform maintenance.",
+
+  highlights: [
+    "Helped launch a campus-focused platform serving 200+ students.",
+    "Designed and developed the responsive frontend experience using React.",
+    "Implemented Progressive Web App capabilities and managed deployment and ongoing maintenance."
+  ],
+
+  image: "/projects/loopers.png",
+  imageAlt: "Loopers campus quick-commerce platform",
+
+  context:
+    "A student-oriented quick-commerce product combining hyperlocal ordering and document-printing services into a single platform.",
+
+  details: [
+    "Designed and developed the customer-facing interface using React and Tailwind CSS.",
+    "Built responsive product browsing, cart, checkout, order tracking, and document-printing interfaces.",
+    "Implemented frontend state management using Zustand.",
+    "Transformed the web application into a Progressive Web App (PWA), improving its accessibility and app-like experience.",
+    "Integrated frontend workflows with existing backend APIs and contributed additional backend features using Node.js and Express.js.",
+    "Maintained the application and addressed issues throughout its usage."
+  ],
     stack: [
       { name: "React", icon: "logos:react" },
       { name: "Express.js", icon: "simple-icons:express" },
@@ -92,7 +97,7 @@ export const projects: Project[] = [
       "Implemented retrieval-augmented generation to ground responses in uploaded learning resources.",
       "Structured student goals, tasks, topics, documents, and assessment results to support contextual learning.",
     ],
-    image: "/projects/lenora.png",
+    image: "/projects/Lenora.png",
     imageAlt: "Lenora AI-powered student learning platform",
     context:
       "An AI-powered student platform built around a connected learning loop: plan what to study, explore concepts, assess understanding, and use the results to guide subsequent learning.",

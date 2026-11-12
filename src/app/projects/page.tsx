@@ -6,7 +6,6 @@ import { Icon } from "@/components/shared/icon";
 import { site } from "@/data/site";
 
 export const metadata: Metadata = {
-  title: "Projects",
   description: `Selected web and machine learning projects by ${site.name}.`,
 };
 

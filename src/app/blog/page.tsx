@@ -27,7 +27,6 @@ export async function generateMetadata({
     "Technical essays, systems explorations, and explainers on machine learning, AI, and software architecture.";
 
   return {
-    title,
     description,
     alternates: {
       canonical: `${site.url}/blog`,

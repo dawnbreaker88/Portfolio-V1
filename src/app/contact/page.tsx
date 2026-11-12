@@ -14,7 +14,6 @@ export async function generateMetadata({
   const hasQuery = Boolean(params && Object.keys(params).length > 0);
 
   return {
-    title: `Contact — ${site.name}`,
     description: `Get in touch with ${site.name} for engineering opportunities, collaborations, and discussions.`,
     alternates: {
       canonical: "/contact",

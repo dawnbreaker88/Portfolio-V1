@@ -16,10 +16,7 @@ const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
-  title: {
-    default: `${site.name} — Portfolio`,
-    template: `%s | ${site.name}`,
-  },
+  title: `${site.name} — Portfolio`,
   description: site.description,
   keywords: [
     "Prabhath",
