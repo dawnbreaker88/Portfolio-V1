@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     description: site.description,
     images: [
       {
-        url: "/og.png",
+        url: "/nep.png",
         width: 1200,
         height: 630,
         alt: `${site.name} — Portfolio Preview`,
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `${site.name} — Portfolio`,
     description: site.description,
-    images: ["/og.png"],
+    images: ["/nep.png"],
     creator: "@dawnbreaker88",
   },
   icons: {
