@@ -2,7 +2,8 @@ import localFont from "next/font/local";
 import { Geist_Mono } from "next/font/google";
 
 export const fontDisplay = localFont({
-  src: "../assets/fonts/PanameraVF.woff2",
+  // src: "../assets/fonts/Ronzino-Regular.woff2",
+  src: "../assets/fonts/BricolageGrotesque-Light.ttf",
   variable: "--font-display",
   display: "swap",
   fallback: ["ui-sans-serif", "system-ui", "sans-serif"],

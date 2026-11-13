@@ -12,7 +12,12 @@ import {
   Sparkles,
   GitCommitHorizontal,
   type LucideIcon,
+  Folder,
+  FileStack,
+  Layers,
+  Award,
 } from "lucide-react";
+
 
 import { cn } from "@/lib/utils";
 
@@ -34,11 +39,11 @@ export type AppDockProps = Readonly<
 
 export const DEFAULT_ITEMS: readonly AppDockItem[] = [
   { id: "home", label: "Home", icon: Home },
-  { id: "projects", label: "Projects", icon: FolderGit2 },
+  { id: "projects", label: "Projects", icon: Folder },
   { id: "experience", label: "Experience", icon: Briefcase },
-  { id: "tech-stack", label: "Tech stack", icon: Wrench },
-  { id: "github-activity", label: "GitHub", icon: GitCommitHorizontal },
-  { id: "highlights", label: "Highlights", icon: Sparkles },
+  { id: "tech-stack", label: "Tech stack", icon: Layers },
+
+  { id: "highlights", label: "Highlights", icon: Award },
 ];
 
 // App dock — launcher matching MacDock frosted tray + hover motion (horizontal or vertical on the right).

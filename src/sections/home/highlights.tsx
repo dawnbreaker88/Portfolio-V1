@@ -12,7 +12,7 @@ export function HighlightsSection() {
   }
 
   return (
-    <section id="highlights" aria-labelledby="highlights-heading" className="mb-20 sm:mb-24">
+    <section id="highlights" aria-labelledby="highlights-heading" className="mb-14 sm:mb-16">
       <SectionHeader
         title={copy.sections.highlights.title}
         index={copy.sections.highlights.index}

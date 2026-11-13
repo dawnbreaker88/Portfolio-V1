@@ -15,7 +15,7 @@ import { HighlightsSection } from "@/sections/home/highlights";
 import { GithubActivitySection } from "@/sections/home/github-activity";
 import { CtaSection } from "@/sections/home/cta";
 import { Footer } from "@/sections/home/footer";
-
+import { Sticker } from "stick-it-up";
 export type BannerItem = {
   id: string;
   name: string;
@@ -156,6 +156,7 @@ export function HomeView({
         className="flex-1 w-full max-w-2xl mx-auto px-6 z-10 pt-0 transition-[padding] duration-500 ease-in-out"
       >
         <ProfileSection />
+
         <AboutSection />
         <ProjectsSection />
         <ExperienceSection />
@@ -165,8 +166,7 @@ export function HomeView({
         <CtaSection />
       </motion.main>
 
-     
-      <Footer />
+      <Footer fullScreen />
     </div>
   );
 }

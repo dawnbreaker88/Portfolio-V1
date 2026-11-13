@@ -91,23 +91,23 @@ export type AsciiBannerVariant = "tokyo" | "kyoto" | "aurora" | "black";
 
 export type BannerConfig =
   | {
-      type: "ascii";
-      variant: AsciiBannerVariant;
-      alt?: string;
-    }
+    type: "ascii";
+    variant: AsciiBannerVariant;
+    alt?: string;
+  }
   | {
-      type: "image" | "gif";
-      src: string;
-      alt?: string;
-      fit?: "ambient" | "cover" | "contain";
-      position?: "center" | "top" | "bottom" | string;
-    }
+    type: "image" | "gif";
+    src: string;
+    alt?: string;
+    fit?: "ambient" | "cover" | "contain";
+    position?: "center" | "top" | "bottom" | string;
+  }
   | {
-      type: "video";
-      src: string;
-      poster?: string;
-      alt?: string;
-    };
+    type: "video";
+    src: string;
+    poster?: string;
+    alt?: string;
+  };
 
 export type CtaWord = {
   word: string;

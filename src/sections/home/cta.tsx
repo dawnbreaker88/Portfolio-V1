@@ -49,9 +49,9 @@ export function CtaSection() {
   }, []);
 
   return (
-    <section id="cta" aria-labelledby="cta-heading" className="w-full mb-20 sm:mb-24">
-      <div className="relative w-full rounded-[16px] border border-border bg-card p-[28px] shadow-xs text-left">
-        {/* Optional Availability Pill (if defined in copy.cta.availability) */}
+    <section id="cta" aria-labelledby="cta-heading" className="w-full mb-16 sm:mb-20">
+      <div className="relative w-full rounded-[16px] border border-border bg-card p-6 sm:p-[28px] shadow-xs text-left">
+        {/* Optional Availability Pill */}
         {availability?.label && (
           <div className="mb-4">
             <TooltipProvider delay={0}>
@@ -71,7 +71,11 @@ export function CtaSection() {
                   <span>{availability.label}</span>
                 </TooltipTrigger>
                 {availability.tip && (
-                  <TooltipContent side="top" sideOffset={8} className="font-mono text-xs">
+                  <TooltipContent
+                    side="top"
+                    sideOffset={8}
+                    className="font-mono text-xs"
+                  >
                     <span>{availability.tip}</span>
                   </TooltipContent>
                 )}
@@ -80,7 +84,7 @@ export function CtaSection() {
           </div>
         )}
 
-        {/* Headline with Inline Word Swap (display size serif) */}
+        {/* Headline with Inline Word Swap */}
         <h2
           id="cta-heading"
           className="font-display text-2xl sm:text-3xl md:text-4xl font-normal text-foreground tracking-tight leading-tight"
@@ -96,7 +100,7 @@ export function CtaSection() {
           <span>{copy.cta.headlineSuffix}</span>
         </h2>
 
-        {/* Subline (mono 14px muted) */}
+        {/* Subline */}
         <p className="font-mono text-sm text-muted-foreground mt-3 max-w-lg leading-relaxed">
           {copy.cta.subline}
         </p>
