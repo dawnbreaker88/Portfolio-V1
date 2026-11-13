@@ -39,25 +39,25 @@ export const copy = {
     buttonHover: "Okay, let's talk",
     words: [
       {
-        word: "figuring out",
+        word: "figuring out ?",
         tip: "A hard problem? Send it over.",
         topic: "problem",
         starter: "Hey Prabhath, I've got a problem worth figuring out: ",
       },
       {
-        word: "building",
+        word: "building ?",
         tip: "An idea that needs a builder?",
         topic: "build",
         starter: "Hey Prabhath, I'm working on building: ",
       },
       {
-        word: "breaking",
+        word: "breaking ?",
         tip: "Something broken I could help fix?",
         topic: "fix",
         starter: "Hey Prabhath, I have something broken that could use your help: ",
       },
       {
-        word: "reading",
+        word: "reading ?",
         tip: "A paper or post I should read?",
         topic: "reading",
         starter: "Hey Prabhath, here's something you might enjoy reading: ",

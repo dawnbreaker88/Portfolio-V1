@@ -97,7 +97,7 @@ export function CtaSection() {
             onPause={handlePause}
             onResume={handleResume}
           />
-          <span>{copy.cta.headlineSuffix}</span>
+          {/* <span>{copy.cta.headlineSuffix}</span> */}
         </h2>
 
         {/* Subline */}
