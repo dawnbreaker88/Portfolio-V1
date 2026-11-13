@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { fontDisplay, fontSans, fontMono } from "@/lib/fonts";
-import { Analytics } from "@vercel/analytics/react";
+import { Analytics } from "@vercel/analytics/next";
 import { Providers } from "@/providers";
 import { TopBar } from "@/components/layout/top-bar";
 import { site } from "@/data/site";
@@ -101,6 +101,7 @@ export default function RootLayout({
         style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
         className="min-h-screen flex flex-col bg-background text-foreground [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
       >
+        <Analytics />
         <Providers>
           <TopBar />
           {children}
