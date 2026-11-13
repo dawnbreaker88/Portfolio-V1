@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { fontDisplay, fontSans, fontMono } from "@/lib/fonts";
+import { Analytics } from "@vercel/analytics/react";
 import { Providers } from "@/providers";
 import { TopBar } from "@/components/layout/top-bar";
 import { site } from "@/data/site";
@@ -103,6 +104,7 @@ export default function RootLayout({
         <Providers>
           <TopBar />
           {children}
+          <Analytics />
         </Providers>
       </body>
     </html>
