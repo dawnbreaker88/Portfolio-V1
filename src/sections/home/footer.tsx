@@ -4,7 +4,8 @@ import React from "react";
 import Image from "next/image";
 import { motion, useReducedMotion } from "motion/react";
 import { site } from "@/data/site";
-
+import { PixelCanvas } from "@/components/ui/pixel-canvas";
+import { Signature } from "@/components/ui/signature";
 const contactLinks = [
   {
     name: "Email",
@@ -82,6 +83,16 @@ export function Footer({ fullScreen = false }: FooterProps) {
         <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/30 to-transparent pointer-events-none" />
       </motion.div>
 
+      {/* Interactive Pixel Canvas — constrained strictly over footer */}
+      <div className="absolute inset-0 w-full h-full pointer-events-none z-[1] overflow-hidden">
+        <PixelCanvas
+          colors={["#525252", "#737373", "#a3a3a3", "#d4d4d4"]}
+          gap={6}
+          speed={0.025}
+          className="w-full h-full opacity-60 dark:opacity-75"
+        />
+      </div>
+
       {/* Top spacer to preserve breathing room for the hands */}
       <div className="w-full flex-1 pointer-events-none" />
 
@@ -94,11 +105,16 @@ export function Footer({ fullScreen = false }: FooterProps) {
         className="w-full max-w-6xl mx-auto px-6 sm:px-10 lg:px-16 pb-8 sm:pb-12 pt-6 shrink-0 relative z-10 pointer-events-auto will-change-[transform,opacity]"
       >
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 sm:gap-8 pb-5 sm:pb-6 border-b border-border/40">
-          {/* Bottom Left: Name & Tagline */}
-          <div className="space-y-2">
-            <h2 className="font-display text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-normal text-foreground tracking-tight leading-none select-none">
-              Prabhath.
-            </h2>
+          {/* Bottom Left: Signature Name & Tagline */}
+          <div className="space-y-1 sm:space-y-2">
+            <h2 className="sr-only">Prabhath.</h2>
+            <Signature
+              text="Prabhath."
+              fontSize={72}
+              duration={1.5}
+              inView={true}
+              className="h-20 sm:h-24 md:h-28 lg:h-32 w-auto -ml-2 text-foreground"
+            />
             <p className="font-mono text-xs sm:text-sm text-muted-foreground max-w-md leading-relaxed">
               {site.tagline}
             </p>

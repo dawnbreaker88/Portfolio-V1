@@ -19,7 +19,7 @@ export const techStack: TechItem[] = [
   { name: "Node.js", icon: "logos:nodejs-icon", group: "backend" },
   { name: "Express.js", icon: "simple-icons:express", group: "backend" },
   { name: "FastAPI", icon: "logos:fastapi", group: "backend" },
-  { name: "GraphQL", icon: "logos:graphql", group: "backend" },
+  // { name: "GraphQL", icon: "logos:graphql", group: "backend" },
  
 
   // Data Science & Machine Learning
@@ -37,7 +37,7 @@ export const techStack: TechItem[] = [
 
   // Infrastructure & DevOps
   { name: "Docker", icon: "logos:docker-icon", group: "devops" },
-  { name: "Kubernetes", icon: "logos:kubernetes", group: "devops" },
+  // { name: "Kubernetes", icon: "logos:kubernetes", group: "devops" },
   { name: "AWS", icon: "logos:aws", group: "devops" },
   { name: "Linux", icon: "logos:linux-tux", group: "devops" },
   { name: "CI/CD", icon: "mdi:infinity", group: "devops" }
