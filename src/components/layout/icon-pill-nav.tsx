@@ -1,12 +1,65 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLenis } from "lenis/react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useMotionValueEvent,
+  useReducedMotion,
+} from "motion/react";
 import { AppDock, DEFAULT_ITEMS } from "@/components/provided/app-dock";
 
 export function IconPillNav() {
   const [activeSection, setActiveSection] = useState<string>("home");
+  const [isVisible, setIsVisible] = useState<boolean>(true);
+  const lastScrollY = useRef<number>(0);
+  const shouldReduceMotion = useReducedMotion();
   const lenis = useLenis();
+  const { scrollY } = useScroll();
+
+  // Scroll direction and footer proximity detection:
+  // - When scrolling down into the footer, hide the side dock navbar.
+  // - When scrolling up, reveal the side dock navbar.
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const diff = latest - lastScrollY.current;
+    lastScrollY.current = latest;
+
+    const footer = document.getElementById("footer");
+    if (!footer) return;
+
+    const rect = footer.getBoundingClientRect();
+    // Footer enters into the lower 80% of the viewport
+    const isAtFooter = rect.top <= window.innerHeight * 0.8;
+
+    if (isAtFooter) {
+      if (diff > 2) {
+        // Scrolling down into / within footer -> disappear
+        setIsVisible(false);
+      } else if (diff < -2) {
+        // Scrolling up -> appear
+        setIsVisible(true);
+      }
+    } else {
+      // Above footer -> keep visible
+      setIsVisible(true);
+    }
+  });
+
+  // Initial check on mount in case the page is loaded/refreshed already at the footer
+  useEffect(() => {
+    const checkInitialPosition = () => {
+      const footer = document.getElementById("footer");
+      if (footer) {
+        const rect = footer.getBoundingClientRect();
+        if (rect.top <= window.innerHeight * 0.8) {
+          setIsVisible(false);
+        }
+      }
+    };
+    checkInitialPosition();
+  }, []);
 
   // Active section tracking with IntersectionObserver
   useEffect(() => {
@@ -62,13 +115,25 @@ export function IconPillNav() {
 
   return (
     /* Desktop AppDock on Right Edge (Hidden on mobile/tablet, moved to TopBar collapse list) */
-    <div className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:block select-none">
-      <AppDock
-        orientation="vertical"
-        items={DEFAULT_ITEMS}
-        activeId={activeSection}
-        onSelect={scrollTo}
-      />
+    <div className="fixed right-4 sm:right-6 top-1/2 -translate-y-1/2 z-40 hidden lg:block select-none pointer-events-none">
+      <AnimatePresence>
+        {isVisible && (
+          <motion.div
+            initial={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 28 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={shouldReduceMotion ? { opacity: 0 } : { opacity: 0, x: 28 }}
+            transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            className="pointer-events-auto"
+          >
+            <AppDock
+              orientation="vertical"
+              items={DEFAULT_ITEMS}
+              activeId={activeSection}
+              onSelect={scrollTo}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
