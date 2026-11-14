@@ -201,6 +201,11 @@ export const favorites: Favorite[] = [
 
 export const isFavoritesVisible = favorites.length > 0;
 
+export const favoriteProfiles = {
+  letterboxd: "https://letterboxd.com/theprabhath/",
+  spotify: "https://open.spotify.com/user/q5cddd8e604v1rrlk2k97ncoj?si=91ec36ef6bde45a3",
+} as const;
+
 export const CATEGORY_CONFIG = [
   { kind: "movie" as const, id: "movies", label: "Movies" },
   { kind: "tv" as const, id: "tv", label: "TV shows" },

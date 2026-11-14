@@ -3,7 +3,7 @@ import Link from "next/link";
 import { Icon } from "@/components/shared/icon";
 import { FavoritesShelf } from "@/sections/favorites/favorites-shelf";
 import { copy } from "@/data/copy";
-import { CATEGORY_CONFIG } from "@/data/favorites";
+import { CATEGORY_CONFIG, favoriteProfiles } from "@/data/favorites";
 import type { Favorite } from "@/types";
 
 interface FavoritesViewProps {
@@ -37,9 +37,35 @@ export function FavoritesView({ favorites }: FavoritesViewProps) {
 
       {/* Page Header */}
       <header className="space-y-3 mb-10 sm:mb-12">
-        <h1 className="font-display text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
-          Favorites
-        </h1>
+        <div className="flex items-center gap-3">
+          <h1 className="font-display text-3xl sm:text-4xl font-normal text-foreground tracking-tight">
+            Favorites
+          </h1>
+          <div className="flex items-center gap-1 text-muted-foreground/70">
+            <a
+              href={favoriteProfiles.letterboxd}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cuelume-tap
+              aria-label="Letterboxd profile"
+              title="Letterboxd profile"
+              className="p-1.5 rounded-md hover:text-foreground hover:bg-muted/50 transition-colors inline-flex items-center justify-center"
+            >
+              <Icon name="simple-icons:letterboxd" size={18} />
+            </a>
+            <a
+              href={favoriteProfiles.spotify}
+              target="_blank"
+              rel="noopener noreferrer"
+              data-cuelume-tap
+              aria-label="Spotify profile"
+              title="Spotify profile"
+              className="p-1.5 rounded-md hover:text-foreground hover:bg-muted/50 transition-colors inline-flex items-center justify-center"
+            >
+              <Icon name="simple-icons:spotify" size={18} />
+            </a>
+          </div>
+        </div>
         <p className="font-mono text-xs sm:text-sm text-muted-foreground leading-relaxed">
           {copy.favorites.intro}
         </p>

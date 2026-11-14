@@ -42,7 +42,7 @@ function DrawnUnderline({
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.12 }}
-          className="absolute bottom-0 left-2.5 w-[calc(100%-20px)] h-[5px] pointer-events-none overflow-visible text-foreground dark:text-white dark:drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]"
+          className="absolute -bottom-1 inset-x-0 w-full h-[5px] pointer-events-none overflow-visible text-foreground dark:text-white dark:drop-shadow-[0_0_6px_rgba(255,255,255,0.7)]"
         >
           <motion.path
             d={path}
@@ -72,6 +72,8 @@ export function TopBar() {
   const [moreOpen, setMoreOpen] = useState(false);
   const [hoveredTab, setHoveredTab] = useState<string | null>(null);
   const moreTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const moreContainerRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLElement>(null);
   const [activeSection, setActiveSection] = useState<string>("home");
   const [profileBottom, setProfileBottom] = useState(520);
   const lastScrollY = useRef(0);
@@ -89,7 +91,7 @@ export function TopBar() {
     setMenuOpen(false);
   }
 
-  // Handle escape key for dropdown
+  // Handle escape key and click outside for dropdown & mobile menu
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -97,8 +99,24 @@ export function TopBar() {
         setMenuOpen(false);
       }
     };
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as Node;
+      if (moreContainerRef.current && !moreContainerRef.current.contains(target)) {
+        setMoreOpen(false);
+      }
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(target)) {
+        const toggleBtn = document.getElementById("mobile-menu-toggle");
+        if (!toggleBtn || !toggleBtn.contains(target)) {
+          setMenuOpen(false);
+        }
+      }
+    };
     window.addEventListener("keydown", handleKeyDown);
-    return () => window.removeEventListener("keydown", handleKeyDown);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
   }, []);
 
   const handleMouseEnterMore = () => {
@@ -110,7 +128,7 @@ export function TopBar() {
     moreTimeoutRef.current = setTimeout(() => {
       setMoreOpen(false);
       setHoveredTab((prev) => (prev === "more" ? null : prev));
-    }, 150);
+    }, 260);
   };
 
   // Measure the exact position where the name and avatar scroll off screen
@@ -272,7 +290,15 @@ export function TopBar() {
             "pointer-events-auto w-full flex items-center justify-between",
             "transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]",
             isCompact
-              ? "max-w-2xl mx-auto rounded-2xl px-4 sm:px-5 py-2.5 border border-border/80 bg-background/80 dark:bg-[#111113]/85 shadow-lg backdrop-blur-xl backdrop-saturate-150 supports-[not(backdrop-filter:blur(1px))]:bg-background/95"
+              ? cn(
+                  "max-w-2xl mx-auto rounded-2xl px-4 sm:px-5 py-2.5",
+                  "bg-white/45 dark:bg-[#0c0c0e]/50",
+                  "backdrop-blur-md backdrop-saturate-180",
+                  "border border-white/50 dark:border-white/[0.12]",
+                  "shadow-[0_8px_32px_0_rgba(0,0,0,0.06),inset_0_1px_1px_0_rgba(255,255,255,0.8),inset_0_-1px_1px_0_rgba(0,0,0,0.03)]",
+                  "dark:shadow-[0_12px_40px_0_rgba(0,0,0,0.55),inset_0_1px_1px_0_rgba(255,255,255,0.18),inset_0_-1px_1px_0_rgba(0,0,0,0.3)]",
+                  "supports-[not(backdrop-filter:blur(1px))]:bg-background/90"
+                )
               : "max-w-7xl mx-auto rounded-2xl px-5 sm:px-8 py-3.5 border border-transparent bg-transparent shadow-none"
           )}
         >
@@ -305,8 +331,10 @@ export function TopBar() {
                     : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                 )}
               >
-                <span>Home</span>
-                <DrawnUnderline isVisible={currentTab === "home"} path={UNDERLINE_PATHS.home} />
+                <span className="relative">
+                  Home
+                  <DrawnUnderline isVisible={currentTab === "home"} path={UNDERLINE_PATHS.home} />
+                </span>
               </Link>
 
               {/* Projects */}
@@ -322,12 +350,15 @@ export function TopBar() {
                     : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                 )}
               >
-                <span>Projects</span>
-                <DrawnUnderline isVisible={currentTab === "projects"} path={UNDERLINE_PATHS.projects} />
+                <span className="relative">
+                  Projects
+                  <DrawnUnderline isVisible={currentTab === "projects"} path={UNDERLINE_PATHS.projects} />
+                </span>
               </Link>
 
               {/* More (Hover Dropdown) */}
               <div
+                ref={moreContainerRef}
                 className="relative"
                 onMouseEnter={() => {
                   handleMouseEnterMore();
@@ -336,80 +367,90 @@ export function TopBar() {
                 onMouseLeave={handleMouseLeaveMore}
               >
                 <button
+                  id="more-button"
                   type="button"
                   data-cuelume-tap
                   onClick={() => setMoreOpen(!moreOpen)}
                   aria-expanded={moreOpen}
-                  aria-haspopup="true"
+                  aria-haspopup="menu"
                   className={cn(
-                    "relative inline-flex items-center gap-1 px-3 py-1.5 transition-colors font-medium cursor-pointer",
+                    "relative inline-flex items-center gap-1 px-3 py-1.5 transition-colors font-medium cursor-pointer outline-none",
                     currentTab === "more"
                       ? "text-foreground dark:text-white font-semibold"
                       : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                   )}
                 >
-                  <span>More</span>
+                  <span className="relative">
+                    More
+                    <DrawnUnderline isVisible={currentTab === "more"} path={UNDERLINE_PATHS.more} />
+                  </span>
                   <Icon
                     name="lucide:chevron-down"
-                    size={13}
+                    size={12}
                     className={cn(
-                      "transition-transform duration-200",
+                      "transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
                       currentTab === "more"
                         ? "text-foreground dark:text-white"
                         : "text-zinc-500 dark:text-white/70",
                       moreOpen && "rotate-180"
                     )}
                   />
-                  <DrawnUnderline isVisible={currentTab === "more"} path={UNDERLINE_PATHS.more} />
                 </button>
 
-                {/* Hover Dropdown Menu */}
+                {/* Smooth Simple Dropdown Menu (No icons, Blog & Favorites only) */}
                 <AnimatePresence>
                   {moreOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 4, scale: 0.96 }}
+                      id="more-dropdown-menu"
+                      role="menu"
+                      initial={{ opacity: 0, y: 4, scale: 0.98 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 4, scale: 0.96 }}
-                      transition={{ duration: 0.16, ease: "easeOut" }}
-                      className="absolute top-full left-0 mt-1 w-44 rounded-xl border border-border/80 bg-background/95 dark:bg-[#111113]/95 backdrop-blur-xl shadow-xl p-1.5 flex flex-col gap-0.5 z-50"
+                      exit={{ opacity: 0, y: 3, scale: 0.98 }}
+                      transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                      className={cn(
+                        "absolute top-full left-0 mt-2 w-36 rounded-xl",
+                        "bg-white/55 dark:bg-[#0f0f12]/65",
+                        "backdrop-blur-xl backdrop-saturate-180",
+                        "border border-white/50 dark:border-white/[0.12]",
+                        "shadow-[0_16px_40px_rgba(0,0,0,0.12),inset_0_1px_1px_rgba(255,255,255,0.7)]",
+                        "dark:shadow-[0_20px_45px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.15)]",
+                        "p-1.5 flex flex-col gap-0.5 z-50",
+                        "before:absolute before:-top-2.5 before:inset-x-0 before:h-2.5 before:content-['']"
+                      )}
                     >
                       {isBlogVisible && (
                         <Link
                           href="/blog"
+                          role="menuitem"
                           data-cuelume-tap
                           data-cuelume-emphasis="subtle"
                           onClick={() => setMoreOpen(false)}
                           className={cn(
-                            "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
+                            "flex items-center px-3 py-2 rounded-lg text-xs font-sans transition-all duration-200",
                             pathname === "/blog"
-                              ? "bg-muted/70 text-foreground dark:text-white font-semibold"
-                              : "text-muted-foreground hover:text-foreground dark:text-white/75 dark:hover:text-white hover:bg-muted/50"
+                              ? "bg-black/10 dark:bg-white/15 text-foreground dark:text-white font-semibold"
+                              : "text-muted-foreground hover:text-foreground dark:text-white/75 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                           )}
                         >
-                          <div className="flex items-center gap-2">
-                            <Icon name="lucide:book-open" size={13} className="text-muted-foreground group-hover:text-foreground dark:group-hover:text-white" />
-                            <span>Blog</span>
-                          </div>
+                          <span>Blog</span>
                         </Link>
                       )}
 
                       {isFavoritesVisible && (
                         <Link
                           href="/favorites"
+                          role="menuitem"
                           data-cuelume-tap
                           data-cuelume-emphasis="subtle"
                           onClick={() => setMoreOpen(false)}
                           className={cn(
-                            "flex items-center justify-between px-3 py-2 rounded-lg text-xs font-sans transition-colors group",
+                            "flex items-center px-3 py-2 rounded-lg text-xs font-sans transition-all duration-200",
                             pathname === "/favorites"
-                              ? "bg-muted/70 text-foreground dark:text-white font-semibold"
-                              : "text-muted-foreground hover:text-foreground dark:text-white/75 dark:hover:text-white hover:bg-muted/50"
+                              ? "bg-black/10 dark:bg-white/15 text-foreground dark:text-white font-semibold"
+                              : "text-muted-foreground hover:text-foreground dark:text-white/75 dark:hover:text-white hover:bg-black/5 dark:hover:bg-white/10"
                           )}
                         >
-                          <div className="flex items-center gap-2">
-                            <Icon name="lucide:bookmark" size={13} className="text-muted-foreground group-hover:text-foreground dark:group-hover:text-white" />
-                            <span>Favorites</span>
-                          </div>
+                          <span>Favorites</span>
                         </Link>
                       )}
                     </motion.div>
@@ -430,7 +471,10 @@ export function TopBar() {
                     : "text-zinc-600 hover:text-foreground dark:text-white/80 dark:hover:text-white"
                 )}
               >
-                <span>Contact</span>
+                <span className="relative">
+                  Contact
+                  <DrawnUnderline isVisible={currentTab === "contact"} path={UNDERLINE_PATHS.contact} />
+                </span>
                 <span
                   className={cn(
                     "size-1.5 rounded-full transition-transform duration-200",
@@ -439,7 +483,6 @@ export function TopBar() {
                       : "bg-muted-foreground/40 dark:bg-white/40 group-hover:bg-foreground dark:group-hover:bg-white group-hover:scale-125"
                   )}
                 />
-                <DrawnUnderline isVisible={currentTab === "contact"} path={UNDERLINE_PATHS.contact} />
               </Link>
             </nav>
           </div>
@@ -453,20 +496,24 @@ export function TopBar() {
               onClick={() => setPaletteOpen(true)}
               aria-label="Open command palette"
               className={cn(
-                "flex items-center gap-2 rounded-full border border-border/70 bg-muted/40 hover:bg-muted/80 text-muted-foreground hover:text-foreground text-xs transition-all duration-300 active:scale-95 cursor-pointer",
+                "flex items-center gap-2 rounded-full",
+                "bg-white/35 dark:bg-white/[0.06] hover:bg-white/55 dark:hover:bg-white/[0.12]",
+                "border border-white/50 dark:border-white/[0.1]",
+                "shadow-[inset_0_1px_0.5px_rgba(255,255,255,0.6)] dark:shadow-[inset_0_1px_0.5px_rgba(255,255,255,0.08)]",
+                "text-muted-foreground hover:text-foreground text-xs transition-all duration-300 active:scale-95 cursor-pointer",
                 isCompact ? "px-2.5 py-1.5" : "px-3.5 py-1.5"
               )}
             >
               <Icon name="lucide:search" size={13} />
               <span
                 className={cn(
-                  "font-sans text-xs transition-all duration-300 overflow-hidden whitespace-nowrap",
-                  isCompact ? "max-w-0 opacity-0 hidden" : "max-w-[200px] opacity-100 hidden md:inline"
+                  "font-sans text-xs transition-all duration-300 whitespace-nowrap overflow-hidden inline-block",
+                  isCompact ? "max-w-0 opacity-0 pointer-events-none" : "max-w-[140px] opacity-100 hidden md:inline-block"
                 )}
               >
                 {copy.topBar.searchPlaceholder}
               </span>
-              <kbd className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-background/80 border border-border/60 text-muted-foreground">
+              <kbd className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white/50 dark:bg-black/30 border border-white/60 dark:border-white/10 text-muted-foreground">
                 {copy.topBar.searchKbd}
               </kbd>
             </button>
@@ -479,12 +526,19 @@ export function TopBar() {
 
             {/* Mobile Navigation Collapse Menu Toggle Button (shown below 640px) */}
             <button
+              id="mobile-menu-toggle"
               type="button"
               data-cuelume-tap
               onClick={() => setMenuOpen(!menuOpen)}
               aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
               aria-expanded={menuOpen}
-              className="sm:hidden flex items-center justify-center size-8 rounded-full border border-border/70 bg-muted/40 hover:bg-muted/80 text-muted-foreground hover:text-foreground transition-all duration-150 active:scale-95 cursor-pointer ml-1"
+              className={cn(
+                "sm:hidden flex items-center justify-center size-8 rounded-full ml-1",
+                "bg-white/35 dark:bg-white/[0.06] hover:bg-white/55 dark:hover:bg-white/[0.12]",
+                "border border-white/50 dark:border-white/[0.1]",
+                "shadow-[inset_0_1px_0.5px_rgba(255,255,255,0.6)] dark:shadow-[inset_0_1px_0.5px_rgba(255,255,255,0.08)]",
+                "text-muted-foreground hover:text-foreground transition-all duration-150 active:scale-95 cursor-pointer"
+              )}
             >
               <Icon name={menuOpen ? "lucide:x" : "lucide:menu"} size={16} />
             </button>
@@ -495,6 +549,7 @@ export function TopBar() {
         <AnimatePresence>
           {menuOpen && (
             <motion.nav
+              ref={mobileMenuRef}
               initial={{ opacity: 0, y: -10, scale: 0.96 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.96 }}
@@ -502,9 +557,13 @@ export function TopBar() {
               aria-label="Mobile navigation"
               className={cn(
                 "pointer-events-auto w-[calc(100%-2rem)] max-w-sm mt-2 rounded-2xl",
-                "border border-border/80 dark:border-white/10",
-                "bg-background/90 dark:bg-[#111113]/90 backdrop-blur-xl backdrop-saturate-150",
-                "shadow-2xl p-2.5 flex flex-col gap-1 sm:hidden"
+                "bg-white/60 dark:bg-[#0f0f12]/70",
+                "backdrop-blur-xl backdrop-saturate-180",
+                "border border-white/50 dark:border-white/[0.12]",
+                "shadow-[0_16px_40px_rgba(0,0,0,0.15),inset_0_1px_1px_rgba(255,255,255,0.6)]",
+                "dark:shadow-[0_20px_45px_rgba(0,0,0,0.6),inset_0_1px_1px_rgba(255,255,255,0.12)]",
+                "p-2.5 flex flex-col gap-1 sm:hidden",
+                "max-h-[calc(100dvh-5rem)] overflow-y-auto scrollbar-none"
               )}
             >
               {/* Primary Pages */}

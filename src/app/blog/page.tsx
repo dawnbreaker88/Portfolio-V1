@@ -8,52 +8,32 @@ import { posts } from "@/data/posts";
 import { copy } from "@/data/copy";
 import { site } from "@/data/site";
 
-interface BlogPageProps {
-  searchParams: Promise<{ tag?: string }>;
-}
-
-export async function generateMetadata({
-  searchParams,
-}: BlogPageProps): Promise<Metadata> {
-  const { tag } = await searchParams;
-  const isFiltered = Boolean(tag);
-  const shouldNoIndex = isFiltered || posts.length < 2;
-
-  const title = isFiltered
-    ? `Blog (${tag}) | ${site.name}`
-    : `Blog | ${site.name}`;
-
-  const description =
-    "Technical essays, systems explorations, and explainers on machine learning, AI, and software architecture.";
-
-  return {
-    description,
-    alternates: {
-      canonical: `${site.url}/blog`,
-    },
-    robots: shouldNoIndex
-      ? {
-          index: false,
-          follow: false,
-        }
-      : {
-          index: true,
-          follow: true,
-        },
-    openGraph: {
-      title,
-      description,
-      url: `${site.url}/blog`,
-      siteName: site.name,
-      type: "website",
-    },
-    twitter: {
-      card: "summary",
-      title,
-      description,
-    },
-  };
-}
+export const metadata: Metadata = {
+  title: `Blog | ${site.name}`,
+  description:
+    "Technical essays, systems explorations, and explainers on machine learning, AI, and software architecture.",
+  alternates: {
+    canonical: `${site.url}/blog`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    title: `Blog | ${site.name}`,
+    description:
+      "Technical essays, systems explorations, and explainers on machine learning, AI, and software architecture.",
+    url: `${site.url}/blog`,
+    siteName: site.name,
+    type: "website",
+  },
+  twitter: {
+    card: "summary",
+    title: `Blog | ${site.name}`,
+    description:
+      "Technical essays, systems explorations, and explainers on machine learning, AI, and software architecture.",
+  },
+};
 
 export default function BlogPage() {
   const itemListJsonLd = {

@@ -77,7 +77,7 @@ export function HomeView({
   const shouldReduceMotion = useReducedMotion();
   const { resolvedTheme } = useTheme();
   const mounted = useSyncExternalStore(
-    () => () => {},
+    () => () => { },
     () => true,
     () => false
   );
@@ -93,21 +93,21 @@ export function HomeView({
   const darkRotation: BannerItem[] =
     initialDarkBanners.length > 0
       ? initialDarkBanners.map((p, idx) => ({
-          id: `dark-${idx}`,
-          name: `Dark Background ${idx + 1}`,
-          active: p,
-          fit: "cover" as const,
-        }))
+        id: `dark-${idx}`,
+        name: `Dark Background ${idx + 1}`,
+        active: p,
+        fit: "cover" as const,
+      }))
       : DEFAULT_DARK_BANNER_ROTATION;
 
   const whiteRotation: BannerItem[] =
     initialWhiteBanners.length > 0
       ? initialWhiteBanners.map((p, idx) => ({
-          id: `white-${idx}`,
-          name: `White Background ${idx + 1}`,
-          active: p,
-          fit: "cover" as const,
-        }))
+        id: `white-${idx}`,
+        name: `White Background ${idx + 1}`,
+        active: p,
+        fit: "cover" as const,
+      }))
       : DEFAULT_WHITE_BANNER_ROTATION;
 
   const activeRotation = isDark ? darkRotation : whiteRotation;

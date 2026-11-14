@@ -7,22 +7,13 @@ type PageProps = {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export async function generateMetadata({
-  searchParams,
-}: PageProps): Promise<Metadata> {
-  const params = await searchParams;
-  const hasQuery = Boolean(params && Object.keys(params).length > 0);
-
-  return {
-    description: `Get in touch with ${site.name} for engineering opportunities, collaborations, and discussions.`,
-    alternates: {
-      canonical: "/contact",
-    },
-    robots: hasQuery
-      ? { index: false, follow: true }
-      : { index: true, follow: true },
-  };
-}
+export const metadata: Metadata = {
+  title: `Contact | ${site.name}`,
+  description: `Get in touch with ${site.name} for engineering opportunities, collaborations, and discussions.`,
+  alternates: {
+    canonical: "/contact",
+  },
+};
 
 async function ContactContent({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const params = await searchParams;
